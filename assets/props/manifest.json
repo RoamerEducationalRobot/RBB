@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "note": "Loaded once at startup. Add entries here to make props available on the canvas.",
+  "categories": [
+    {
+      "id": "builtin",
+      "label": "Built-in",
+      "items": []
+    }
+  ]
+}

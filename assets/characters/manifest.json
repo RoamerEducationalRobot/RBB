@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "note": "Loaded once at startup. Add entries here to make characters available in the designer.",
+  "categories": [
+    {
+      "id": "roamer-ancestors",
+      "label": "Roamer Ancestors",
+      "items": []
+    },
+    {
+      "id": "my-roamers",
+      "label": "My Roamers",
+      "items": []
+    }
+  ]
+}

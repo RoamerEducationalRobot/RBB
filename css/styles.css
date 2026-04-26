@@ -1,0 +1,1096 @@
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-weight: bold; background: #fff;
+           display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* Menu Bar */
+    #menuBar { display: flex; align-items: center; background: #ddd; height: 36px;
+               padding: 0 8px; gap: 4px; flex-shrink: 0; }
+    #menuBar button { background: transparent; border: none; padding: 6px 14px;
+                      font-size: 13px; font-weight: bold; color: #003366; cursor: pointer; border-radius: 3px; }
+    #menuBar button:hover { background: #bbb; }
+    #menuBar .sep { flex: 1; }
+
+    /* Header Bar */
+    #headerBar { display: flex; align-items: center; background: #1E2E53;
+                 height: 52px; padding: 0 16px; flex-shrink: 0; gap: 12px; }
+    #headerLogo { width: 40px; height: 40px; border-radius: 50%;
+                  background: #fff; display: flex; align-items: center; justify-content: center;
+                  font-size: 9px; color: #1E2E53; font-weight: bold; text-align: center;
+                  flex-shrink: 0; overflow: hidden; }
+    #headerLogo img { width: 100%; height: 100%; object-fit: contain; }
+    #headerTitleGroup { display: flex; flex-direction: column; justify-content: center; }
+    #headerTitle { font-size: 22px; font-weight: bold; color: #fff; letter-spacing: 1px; line-height: 1.1; }
+    #headerSub   { font-size: 11px; color: #aac4ff; line-height: 1.1; }
+    #headerSpacer { flex: 1; }
+    #headerSocial { display: flex; gap: 8px; align-items: center; }
+    #headerSocial a { color: #aac4ff; font-size: 11px; text-decoration: none;
+                      padding: 3px 8px; border: 1px solid #4a6aaa; border-radius: 3px; }
+    #headerSocial a:hover { background: #2a4080; color: #fff; }
+
+    /* Tab Bar */
+    #tabBar { display: flex; align-items: flex-end; background: #f0f0f0;
+              border-bottom: 2px solid #1E2E53; height: 34px; flex-shrink: 0; padding: 0 8px; gap: 2px; }
+    #tabSpacer { flex: 1; }
+    .tabBtn { padding: 0 16px; height: 28px; border: 1px solid #ccc; border-bottom: none;
+              background: #ddd; font-size: 13px; font-weight: bold;
+              color: #333; cursor: pointer; border-radius: 4px 4px 0 0;
+              display: inline-flex; align-items: center; white-space: nowrap; }
+    .tabBtn.active { background: #fff; border-color: #1E2E53; color: #1E2E53; }
+    .tabBtn:hover:not(.active) { background: #ccc; }
+
+    /* Management icons */
+    #mgmtIcons { display: flex; align-items: center; gap: 2px; padding: 0 4px 2px 4px; }
+    .mgmt-btn { width: 26px; height: 26px; border: 1px solid #bbb; border-radius: 3px;
+                background: #e8e8e8; cursor: pointer; font-size: 14px; font-weight: bold;
+                color: #1E2E53; display: flex; align-items: center; justify-content: center;
+                padding: 0; line-height: 1; }
+    .mgmt-btn:hover { background: #d0d0d0; border-color: #1E2E53; }
+
+    /* Main area */
+    #workspaceArea { flex: 1; display: flex; overflow: hidden; }
+
+    /* Sidebar */
+    #sidebar { width: 160px; background: #1E2E53; display: flex; flex-direction: column;
+               flex-shrink: 0; overflow-y: auto; overflow-x: hidden; }
+    .cat-btn { width: 100%; min-height: 38px; border: none; cursor: pointer;
+               font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;
+               color: #fff; text-align: center; padding: 8px 4px; margin: 2px 0;
+               display: flex; align-items: center; justify-content: center;
+               line-height: 1.2; outline: none; }
+    .cat-btn:hover  { filter: brightness(1.15); }
+    .cat-btn.active { filter: brightness(1.3); outline: 2px solid #fff; }
+
+    /* Blockly area */
+    #blocklyArea { flex: 1; position: relative; overflow: hidden; }
+    .tabPanel { position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+                visibility: hidden; pointer-events: none; }
+    .tabPanel.active { visibility: visible; pointer-events: auto; }
+    #panel-rw.active      { display: flex !important; }
+    #panel-settings.active { display: flex !important; }
+    .blocklyDiv { width: 100%; height: 100%; }
+    .blocklyToolboxDiv { display: none !important; }
+    .blocklyFlyoutBackground { fill: #2a3f6f !important; }
+
+
+
+
+    /* ── Character Designer Overlay — v130 layout ───────────────────────────── */
+    #charDesignerOverlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: #1a2a4a; z-index: 2000; flex-direction: column;
+    }
+    #charDesignerOverlay.active { display: flex; }
+    #charTopBar {
+      background: #0d1b35; border-bottom: 2px solid #2a4080;
+      padding: 8px 16px; display: flex; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+    #charTopBar .char-title {
+      color: #fff; font-size: 15px; font-weight: bold;
+      font-family: Arial, sans-serif; flex: 1;
+    }
+    /* Save/Cancel buttons below gizmo — reuse ph-btn style */
+    #cdGizmoButtons {
+      display: flex; gap: 8px; justify-content: center;
+    }
+
+    /* Main area: tools strip | canvas area | asset panel */
+    #charMain {
+      display: flex; flex: 1; overflow: hidden; position: relative;
+    }
+
+    /* ── Left tools strip ── */
+    #cdToolsStrip {
+      width: 48px; background: #0d1b35; border-right: 2px solid #2a4080;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-start; flex-shrink: 0;
+      padding-top: 8px; gap: 4px;
+      user-select: none;
+    }
+    .cd-tool-btn {
+      width: 36px; height: 36px; border: 2px solid #2a4080; border-radius: 5px;
+      background: #1a2a4a; color: #6a9fd8; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .cd-tool-btn:hover { background: #2a3a6a; border-color: #4a6aaa; color: #aac4ff; }
+    .cd-tool-btn.active { background: #00A0E3; border-color: #00A0E3; color: #fff; }
+    .cd-tool-btn svg { pointer-events: none; }
+
+    /* ── Unified Drawing Dialogue (colour + thickness + line type) ── */
+    #cdPickerDlg {
+      position: absolute; z-index: 300;
+      background: #e0e8f0; border: 2px solid #8aaacc; border-radius: 8px;
+      padding: 10px; display: none; flex-direction: column; gap: 8px;
+      font-family: Arial, sans-serif; font-size: 11px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+      top: 8px; left: 56px;
+    }
+    #cdPickerDlg.visible { display: flex; }
+
+    /* Top row: swatches left, HSV right */
+    #cdPickerTopRow {
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+
+    /* Left: swatch grid + My Colours */
+    #cdPickerLeft {
+      display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;
+    }
+    #cdPickerSwatchGrid {
+      display: grid; grid-template-columns: repeat(8, 26px); gap: 3px;
+    }
+    .cd-preset-swatch {
+      width: 26px; height: 26px; border-radius: 3px; cursor: pointer;
+      border: 2px solid transparent; box-sizing: border-box;
+    }
+    .cd-preset-swatch:hover  { border-color: #005fa3; }
+    .cd-preset-swatch.active { border-color: #005fa3; box-shadow: 0 0 0 1px #005fa3; }
+    .cd-swatch-placeholder {
+      background: #c8d0d8; cursor: default; opacity: 0.4;
+    }
+    .cd-swatch-placeholder:hover { border-color: transparent; }
+
+    #cdPickerMyColoursSection { margin-top: 2px; }
+    #cdPickerMyColoursLabel {
+      color: #1a2a4a; font-weight: bold; font-size: 11px; margin-bottom: 3px;
+    }
+    #cdPickerMyColoursRow {
+      display: flex; gap: 3px; align-items: center; flex-wrap: wrap; min-height: 28px;
+    }
+    .cd-my-colour-wrap {
+      position: relative; width: 26px; height: 26px; flex-shrink: 0;
+    }
+    .cd-my-colour-swatch {
+      width: 26px; height: 26px; border-radius: 3px; cursor: pointer;
+      border: 2px solid transparent; box-sizing: border-box; display: block;
+    }
+    .cd-my-colour-swatch:hover { border-color: #005fa3; }
+    .cd-my-colour-remove {
+      position: absolute; top: -5px; right: -5px;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: #cc3333; color: #fff; font-size: 9px; font-weight: bold;
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; line-height: 1; border: 1px solid #fff;
+      z-index: 10;
+    }
+    .cd-my-colour-wrap:hover .cd-my-colour-remove { display: flex; }
+    #cdPickerAddBtn {
+      width: 26px; height: 26px; border: 2px solid #8aaacc; border-radius: 3px;
+      background: #c8d8e8; color: #1a2a4a; cursor: pointer;
+      font-size: 16px; display: flex; align-items: center;
+      justify-content: center; font-weight: bold; box-sizing: border-box; flex-shrink: 0;
+    }
+    #cdPickerAddBtn:hover { border-color: #005fa3; background: #b0c8e0; }
+
+    /* Black, white, transparent beside eyedropper */
+    #cdPickerExtras {
+      display: flex; flex-direction: column; gap: 4px; align-items: center; flex-shrink: 0;
+    }
+    .cd-abs-swatch {
+      width: 26px; height: 26px; border-radius: 3px; cursor: pointer;
+      border: 2px solid #8aaacc; box-sizing: border-box;
+    }
+    .cd-abs-swatch:hover { border-color: #005fa3; }
+    .cd-preset-transparent {
+      width: 26px; height: 26px; border-radius: 3px; cursor: pointer;
+      border: 2px solid #8aaacc; box-sizing: border-box;
+      background-image: linear-gradient(45deg,#ccc 25%,transparent 25%),
+        linear-gradient(-45deg,#ccc 25%,transparent 25%),
+        linear-gradient(45deg,transparent 75%,#ccc 75%),
+        linear-gradient(-45deg,transparent 75%,#ccc 75%);
+      background-size: 8px 8px; background-position: 0 0,0 4px,4px -4px,-4px 0;
+      background-color: #fff;
+    }
+    .cd-preset-transparent:hover { border-color: #005fa3; }
+    .cd-eyedropper-btn {
+      width: 26px; height: 26px; border: 2px solid #8aaacc; border-radius: 4px;
+      background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .cd-eyedropper-btn:hover { border-color: #005fa3; }
+
+    /* Right: HSV square + hue + extras */
+    #cdPickerHsvPanel {
+      display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;
+    }
+    #cdPickerHsvWrap {
+      display: flex; gap: 6px; align-items: stretch;
+    }
+    #cdPickerSquare {
+      width: 180px; height: 140px; border-radius: 4px; cursor: crosshair;
+      position: relative; flex-shrink: 0;
+    }
+    #cdPickerSquareCanvas { width: 180px; height: 140px; border-radius: 4px; display: block; }
+    #cdPickerCursor {
+      position: absolute; width: 12px; height: 12px;
+      border: 2px solid #fff; border-radius: 50%;
+      box-shadow: 0 0 0 1px #000;
+      pointer-events: none; transform: translate(-50%,-50%);
+    }
+    #cdPickerHueWrap { width: 16px; position: relative; flex-shrink: 0; }
+    #cdPickerHueCanvas { width: 16px; height: 140px; border-radius: 4px; display: block; cursor: pointer; }
+    #cdPickerHueCursor {
+      position: absolute; left: -2px; right: -2px; height: 4px;
+      border: 2px solid #fff; border-radius: 2px; box-shadow: 0 0 0 1px #000;
+      pointer-events: none; transform: translateY(-50%);
+    }
+    #cdPickerExtras {
+      display: flex; flex-direction: column; gap: 6px; align-items: center; flex-shrink: 0;
+    }
+    .cd-preset-transparent {
+      width: 26px; height: 26px; border-radius: 3px; cursor: pointer;
+      border: 2px solid #8aaacc; box-sizing: border-box;
+      background-image: linear-gradient(45deg,#ccc 25%,transparent 25%),
+        linear-gradient(-45deg,#ccc 25%,transparent 25%),
+        linear-gradient(45deg,transparent 75%,#ccc 75%),
+        linear-gradient(-45deg,transparent 75%,#ccc 75%);
+      background-size: 8px 8px; background-position: 0 0,0 4px,4px -4px,-4px 0;
+      background-color: #fff;
+    }
+    .cd-preset-transparent:hover { border-color: #005fa3; }
+    .cd-eyedropper-btn {
+      width: 26px; height: 26px; border: 2px solid #8aaacc; border-radius: 4px;
+      background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .cd-eyedropper-btn:hover { border-color: #005fa3; }
+
+    /* Hex row */
+    #cdPickerHexRow { display: flex; align-items: center; gap: 6px; }
+    #cdPickerModeBtn {
+      padding: 3px 8px; border: 1px solid #8aaacc; border-radius: 3px;
+      background: #c8d8e8; color: #1a2a4a; font-size: 11px; font-weight: bold; cursor: pointer;
+    }
+    #cdPickerModeBtn:hover { background: #b0c8e0; }
+    #cdPickerHexLabel { color: #1a2a4a; font-weight: bold; font-size: 11px; }
+    #cdPickerHexInput {
+      flex: 1; padding: 3px 6px; border: 1px solid #8aaacc; border-radius: 3px;
+      background: #fff; color: #1a2a4a; font-size: 11px; font-family: monospace;
+    }
+
+    /* Bottom row: thickness + line type visual selectors */
+    #cdPickerBottomRow {
+      display: flex; gap: 16px; align-items: flex-start;
+      border-top: 1px solid #8aaacc; padding-top: 8px;
+    }
+    .cd-selector-group { display: flex; flex-direction: column; gap: 4px; }
+    .cd-selector-label {
+      font-size: 10px; font-weight: bold; color: #445;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .cd-selector-options { display: flex; gap: 4px; }
+    .cd-visual-btn {
+      width: 52px; height: 28px; border: 2px solid #8aaacc; border-radius: 4px;
+      background: #fff; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; padding: 0; box-sizing: border-box;
+    }
+    .cd-visual-btn:hover { border-color: #005fa3; }
+    .cd-visual-btn.active { border-color: #005fa3; background: #d0e4f4; }
+
+    /* Drawing Opts strip — now just a small colour indicator on the tool strip */
+    #cdDrawOpts { display: none; }
+
+
+    /* ── Centre: canvas col + gizmo/preview col ── */
+    #cdCentreCol {
+      display: flex; flex: 1; flex-direction: row;
+      align-items: flex-start; justify-content: flex-start; gap: 16px;
+      overflow: hidden; padding: 12px 12px 12px 8px;
+    }
+    #cdCanvasCol {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      flex-shrink: 0;
+    }
+    #cdAboveCanvas {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      width: 200px;
+    }
+    #cdOrientWrap {
+      display: flex; align-items: center; gap: 8px; justify-content: center;
+    }
+    #cdFrontLabel {
+      color: #aac4ff; font-family: Arial, sans-serif; font-size: 11px;
+      font-weight: bold; text-align: center; letter-spacing: 0.5px;
+    }
+    #cdCanvasTitle {
+      color: #4a6aaa; font-family: Arial, sans-serif; font-size: 10px;
+      font-weight: bold; text-align: center;
+    }
+    #cdCanvasWrap {
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+      flex-shrink: 0;
+    }
+    #cdCanvasWrap label {
+      color: #aac4ff; font-family: Arial, sans-serif; font-size: 11px;
+      font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    #cdCanvasBg {
+      background-color: #fff;
+      background-image:
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      border: 2px solid #2a4080; border-radius: 4px;
+      display: inline-block; line-height: 0;
+    }
+    #cdCanvas { display: block; }
+    #cdCanvasBg.cd-default-mode { cursor: not-allowed; opacity: 0.85; }
+
+    /* Gizmo + preview column — stacked vertically beside canvas */
+    #cdGizmoPreviewRow {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      flex-shrink: 0;
+    }
+    #cdNavCubeWrap { display: flex; align-items: center; justify-content: center; }
+    #cdViewSelector { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    #cdViewDisplay {
+      width: 134px; height: 90px;
+      border: 1.5px solid #2a4080; border-radius: 6px;
+      background: rgba(0,10,40,0.4); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    #cdViewDisplay:hover { border-color: #4a6aaa; }
+    #cdViewDisplay svg { width: 100%; height: 100%; display: block; }
+    #cdViewDropdown {
+      width: 134px; background: #1a2a4a; color: #aac4ff;
+      border: 1px solid #2a4080; border-radius: 4px;
+      font-size: 11px; padding: 3px 6px; cursor: pointer;
+    }
+    #cdViewDropdown:hover { border-color: #4a6aaa; }
+    #cdPreviewWrap {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    #cdPreviewWrap label {
+      color: #aac4ff; font-family: Arial, sans-serif; font-size: 11px;
+      font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    #cdPreviewCanvas {
+      border: 2px solid #2a4080; border-radius: 4px; display: block;
+    }
+    #cdResolutionWrap {
+      display: flex; align-items: center; gap: 6px;
+      color: #aac4ff; font-family: Arial, sans-serif; font-size: 11px;
+    }
+    #cdResolutionWrap input[type=range] { width: 80px; cursor: pointer; }
+    #cdResLabel { min-width: 36px; color: #6a9fd8; font-family: Arial, sans-serif; font-size: 11px; }
+    #cdToggleWrap {
+      display: flex; align-items: center; gap: 0;
+      border: 1px solid #4a6aaa; border-radius: 4px; overflow: hidden;
+    }
+    .cd-toggle-btn {
+      padding: 5px 12px; border: none; cursor: pointer;
+      font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;
+      background: #1a2a4a; color: #6a9fd8;
+    }
+    .cd-toggle-btn.active { background: #00A0E3; color: #fff; }
+    #cdPreviewLabel {
+      color: #aac4ff; font-family: Arial, sans-serif; font-size: 11px;
+      font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;
+      text-align: center;
+    }
+    /* Pen hole uses cc-tog toggle style (same as Clicker/Grid) */
+    #cdPenHoleWrap {
+      display: flex; align-items: center; gap: 6px; margin-top: 6px;
+    }
+    .cd-ctrl-label {
+      font-size: 11px; color: #6a9fd8; font-family: Arial, sans-serif;
+      font-weight: bold; min-width: 64px;
+    }
+    .cd-orient-btn {
+      padding: 4px 10px; border: 1px solid #4a6aaa; border-radius: 4px;
+      background: #1a2a4a; color: #6a9fd8; cursor: pointer;
+      font-size: 16px; line-height: 1;
+    }
+    .cd-orient-btn:hover { background: #2a3a6a; color: #aac4ff; }
+    .cd-toggle-btn:hover:not(.active) { background: #2a3a6a; color: #aac4ff; }
+
+    /* ── Right asset panel ── */
+    #cdAssetPanel {
+      width: 340px; min-width: 280px; flex-shrink: 0; background: #0f1d38;
+      border-left: 2px solid #2a4080;
+      display: flex; flex-direction: column; gap: 0; overflow: hidden;
+    }
+
+    /* Roamers section */
+    #cdRoamersSection {
+      flex: 1; display: flex; flex-direction: column;
+      border-bottom: 2px solid #2a4080; overflow: hidden;
+    }
+    /* Tab bar */
+    #cdRoamerTabs {
+      display: flex; flex-shrink: 0;
+      border-bottom: 1px solid #2a4080;
+    }
+    .cd-asset-tab {
+      flex: 1; padding: 7px 4px; border: none; cursor: pointer;
+      font-family: Arial, sans-serif; font-size: 11px; font-weight: bold;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      background: #0d1b35; color: #4a6aaa;
+      border-right: 1px solid #2a4080;
+    }
+    .cd-asset-tab:last-child { border-right: none; }
+    .cd-asset-tab.active { background: #1a2a4a; color: #aac4ff; }
+    .cd-asset-tab:hover:not(.active) { background: #152238; color: #7a9acc; }
+
+    /* Category dropdown row */
+    .cd-asset-cat-row {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 8px; flex-shrink: 0; border-bottom: 1px solid #1a2a4a;
+    }
+    .cd-asset-cat-row select {
+      flex: 1; padding: 4px 6px; background: #0d1b35;
+      border: 1px solid #2a4080; border-radius: 3px;
+      color: #aac4ff; font-family: Arial, sans-serif; font-size: 11px;
+      font-weight: bold; cursor: pointer;
+    }
+    .cd-asset-load-btn {
+      padding: 4px 10px; border: none; border-radius: 3px; cursor: pointer;
+      font-family: Arial, sans-serif; font-size: 11px; font-weight: bold;
+      background: #2a4080; color: #aac4ff;
+    }
+    .cd-asset-load-btn:hover { background: #3a5090; color: #fff; }
+
+    /* Thumbnail grid */
+    .cd-asset-grid {
+      flex: 1; overflow-y: auto; padding: 8px;
+      display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start;
+    }
+    .cd-asset-thumb {
+      width: 72px; background: #1a2a4a;
+      border: 2px solid #2a4080; border-radius: 4px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      overflow: hidden; flex-shrink: 0; padding-bottom: 2px;
+    }
+    .cd-asset-thumb:hover { border-color: #00A0E3; }
+    .cd-asset-thumb.selected { border-color: #00A0E3; background: #1a3a5a; }
+    .cd-asset-thumb img, .cd-asset-thumb svg { max-width: 64px; max-height: 64px; flex-shrink: 0; }
+    .cd-asset-label {
+      font-size: 9px; font-weight: normal; color: #aac4ff; text-align: center;
+      padding: 2px 2px 0; width: 100%; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0;
+    }
+    .cd-asset-empty {
+      color: #2a4080; font-family: Arial, sans-serif; font-size: 11px;
+      font-style: italic; padding: 12px 8px; width: 100%; text-align: center;
+    }
+
+    /* My Roamers load-from-file button */
+    #cdMyRoamersLoad {
+      padding: 6px 8px; flex-shrink: 0; border-bottom: 1px solid #1a2a4a;
+    }
+    #cdMyRoamersLoad button {
+      width: 100%; padding: 5px; border: 1px dashed #2a4080; border-radius: 3px;
+      background: transparent; color: #4a6aaa; font-family: Arial, sans-serif;
+      font-size: 11px; font-weight: bold; cursor: pointer;
+    }
+    #cdMyRoamersLoad button:hover { border-color: #00A0E3; color: #aac4ff; }
+    #cdSvgFileInput { display: none; }
+
+    /* Accessories section */
+    #cdAccessoriesSection {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+    }
+    #cdAccessoriesSection .cd-section-title {
+      padding: 7px 10px; background: #0d1b35; border-bottom: 1px solid #2a4080;
+      color: #aac4ff; font-family: Arial, sans-serif; font-size: 11px;
+      font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+
+        /* ── Set Position & Heading Dialogue ──────────────────────────────────── */
+    #posHeadingDlg {
+      display: none; position: fixed; top: 150px; left: 50%;
+      transform: translateX(-50%);
+      background: #1E2E53; border: 2px solid #4a6aaa;
+      border-radius: 8px; z-index: 3000;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      font-family: Arial, sans-serif; overflow: visible;
+    }
+    #posHeadingDlg.active { display: block; }
+    #posHeadingDlg .ph-header {
+      background: #0d1b35; padding: 8px 12px;
+      border-radius: 6px 6px 0 0; border-bottom: 1px solid #2a4080;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: move; user-select: none;
+    }
+    #posHeadingDlg .ph-header span { color: #fff; font-size: 13px; font-weight: bold; }
+    #posHeadingDlg .ph-header button {
+      background: none; border: none; color: #aac4ff;
+      font-size: 16px; cursor: pointer; padding: 0 4px;
+    }
+    #posHeadingDlg .ph-body { padding: 12px 12px 56px 12px; display: flex; flex-direction: row; gap: 20px; align-items: flex-start; overflow: visible; }
+    .ph-section { display: flex; flex-direction: column; gap: 6px; }
+    .ph-section-title {
+      color: #aac4ff; font-size: 11px; font-weight: bold;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 1px solid #2a4080; padding-bottom: 4px;
+    }
+    /* POSITION — left strip + grid + X row */
+    .ph-pos-outer { display: flex; flex-direction: column; gap: 4px; }
+    .ph-pos-main  { display: flex; align-items: stretch; gap: 0; }
+    /* Left strip: Y-high readout, Y input + steps, Y-low readout */
+    .ph-y-col {
+      width: 56px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      justify-content: space-between; align-items: center;
+      padding-right: 4px;
+    }
+    /* Grid */
+    #posGrid {
+      width: 140px; height: 140px; background: #0d1b35;
+      border: 1px solid #2a4080; border-radius: 4px;
+      position: relative; cursor: crosshair; flex-shrink: 0;
+    }
+    #posGrid::after {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(74,106,170,0.7) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,106,170,0.7) 1px, transparent 1px);
+      background-size: 140px 140px; background-position: 0 70px, 70px 0;
+      pointer-events: none;
+    }
+    /* Position marker: pen hole = SVG (0,0).
+       JS sets left/top to the pen hole world position as % of grid.
+       SVG viewBox "-10 -14 20 24": origin (0,0) is at 50% width, 58.33% height.
+       translate(-50%, -58.33%) shifts the element so its (0,0) lands on left/top.
+       transform-origin matches so rotation is around (0,0) = pen hole.        */
+    #posMarker {
+      position: absolute;
+      pointer-events: none;
+      transition: left 0.1s, top 0.1s;
+      z-index: 2;
+    }
+    /* X row: left-padded to align left edge under grid left edge */
+    #posXRow {
+      display: flex; align-items: center; gap: 4px;
+      padding-left: 56px;
+    }
+    .ph-readout {
+      background: #0d1b35; border: 1px solid #2a4080; border-radius: 3px;
+      color: #6a9fd8; font-size: 11px; font-weight: bold;
+      text-align: center; padding: 3px 4px; width: 40px; flex-shrink: 0;
+    }
+    #phX, #phY {
+      width: 50px; padding: 4px; background: #0d1b35;
+      border: 1px solid #4a6aaa; border-radius: 3px;
+      color: #fff; font-size: 13px; font-weight: bold;
+      text-align: center; flex-shrink: 0;
+    }
+    .ph-steps { color: #6a9fd8; font-size: 11px; flex-shrink: 0; }
+    /* HEADING — D/E at top of compass, compass centred below */
+    .ph-hdg-outer { display: flex; flex-direction: row; align-items: flex-start; justify-content: center; }
+    #headingCompass {
+      width: 130px; height: 130px; background: #0d1b35;
+      border: 1px solid #2a4080; border-radius: 50%;
+      position: relative; cursor: crosshair; flex-shrink: 0;
+    }
+    #headingCompass::after {
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+      background-image:
+        linear-gradient(rgba(74,106,170,0.7) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,106,170,0.7) 1px, transparent 1px);
+      background-size: 130px 130px; background-position: 0 65px, 65px 0;
+      pointer-events: none;
+    }
+    /* Roamer triangle in compass — rotates with heading */
+    #compassRoamer {
+      position: absolute; top: 50%; left: 50%;
+      /* Shift so SVG (0,0) — the pen hole — lands on compass centre.
+         SVG is 28x40px with viewBox -14 -28 28 40, so (0,0) is at
+         pixel (14,28) within the element. Shift by (-14px,-28px). */
+      margin-left: -14px; margin-top: -28px;
+      transform-origin: 14px 28px;
+      transform: rotate(0deg); transition: transform 0.1s;
+      pointer-events: none; z-index: 1;
+    }
+    #compassRoamer svg {
+      display: block;
+      overflow: visible;
+    }
+
+    #phHLeft, #phHRight {
+      width: 50px; padding: 3px 4px; background: #0d1b35;
+      border: 1px solid #4a6aaa; border-radius: 3px;
+      color: #fff; font-size: 13px; font-weight: bold; text-align: center;
+    }
+    .ph-hdg-label { color: #aac4ff; font-size: 9px; text-align: center; display: block; margin-bottom: 2px; }
+    /* Footer */
+    #posHeadingDlg .ph-footer {
+      padding: 8px 12px; border-top: 1px solid #2a4080;
+      display: flex; justify-content: flex-end; gap: 8px;
+    }
+    .ph-btn {
+      padding: 6px 16px; border: none; border-radius: 4px;
+      font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; cursor: pointer;
+    }
+    .ph-btn.cancel { background: #2a4080; color: #aac4ff; }
+    .ph-btn.cancel:hover { background: #3a5090; }
+    .ph-btn.ok { background: #00A0E3; color: #fff; }
+    .ph-btn.ok:hover { background: #0090d0; }
+
+
+
+    /* Scripts panel */
+    #scriptsPanel { display: flex; flex-direction: column; height: 100%;
+                    padding: 10px; gap: 8px; background: #f8f8f8; }
+    .scriptSection { display: flex; flex-direction: column; flex: 1; gap: 4px; }
+    .scriptLabel { font-size: 13px; color: #1E2E53; padding: 4px 0; }
+    .scriptArea { flex: 1; font-family: 'Courier New', monospace; font-size: 13px;
+                  padding: 8px; border: 1px solid #ccc; border-radius: 4px; resize: none; background: #fff; }
+    #scriptsBtnRow { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+    #scriptsBtnRow button { padding: 7px 18px; font-size: 13px; font-weight: bold;
+                            border: none; border-radius: 4px; cursor: pointer; }
+    #btnCopyRSL  { background: #00A0E3; color: #fff; }
+    #btnCopyRSL:hover { background: #0080c0; }
+    #btnCopyJSON { background: #FF7F00; color: #fff; }
+    #btnCopyJSON:hover { background: #cc6600; }
+    #copyMsg { font-size: 12px; color: green; display: none; }
+
+    /* Blockly bracket alignment — ] aligns with [ via Blockly.inputs.Align.RIGHT */
+
+    /* Field colours — yellow for all editable fields */
+    .blocklyEditableText > text,
+    .blocklyEditableText text { fill: #000 !important; font-weight: bold !important; }
+    .blocklyHtmlInput { background-color: #FFFF00 !important; color: #000 !important; border-radius: 0 !important; }
+    .blocklyText { font-size: 10pt !important; font-weight: bold !important; fill: #000 !important; }
+    .blocklyEditableText rect { fill: #FFFF00 !important; stroke: #888 !important; rx: 0 !important;
+      height: 24px !important; transform: translateY(2px) !important; }
+
+    /* ══ ROAMERWORLD ══════════════════════════════ */
+    #panel-rw.active { display: flex !important; position: absolute;
+                       top: 0; left: 0; right: 0; bottom: 0; }
+
+    #rwContainer { display: flex; flex-direction: row; width: 100%; height: 100%;
+                   overflow: hidden; position: relative; }
+
+    /* RW Setup Sidebar — matches programming sidebar pattern */
+    #rwSidebar { width: 52px; flex-shrink: 0; background: #1E2E53;
+                 display: flex; flex-direction: column; overflow: hidden;
+                 position: relative; z-index: 5; }
+    .rw-cat-btn { width: 52px; min-height: 52px; border: none; cursor: pointer;
+                  background: #1E2E53; color: #aac4ff;
+                  font-size: 9px; font-weight: bold; text-align: center;
+                  padding: 6px 2px; display: flex; flex-direction: column;
+                  align-items: center; justify-content: center; gap: 3px;
+                  border-bottom: 1px solid #2a3f6f; line-height: 1.2; }
+    .rw-cat-btn:hover  { background: #2a3f6f; color: #fff; }
+    .rw-cat-btn.active { background: #2a4080; color: #fff;
+                         border-right: 3px solid #00A0E3; }
+    .rw-cat-icon { font-size: 18px; line-height: 1; }
+
+    /* Flyout panel — appears to the right of the sidebar */
+    #rwFlyout { position: absolute; left: 52px; top: 0; bottom: 0;
+                width: 180px; background: #162240;
+                border-right: 2px solid #2a4080;
+                overflow-y: auto; overflow-x: hidden;
+                display: none; flex-direction: column;
+                padding-bottom: 8px; z-index: 4; }
+    #rwFlyout.open { display: flex; }
+    .rw-flyout-title { background: #0a1a3a; color: #aac4ff; font-size: 11px;
+                       text-transform: uppercase; letter-spacing: 1px;
+                       padding: 8px 10px; flex-shrink: 0; }
+    .rw-section-label { background: #1e3060; color: #aac4ff; font-size: 10px;
+                        padding: 4px 10px; text-transform: uppercase;
+                        letter-spacing: 1px; margin-top: 6px; }
+    .rw-row { display: flex; align-items: center; justify-content: space-between;
+              padding: 4px 10px; gap: 4px; }
+    .rw-row label { font-size: 11px; color: #ccd8ff; flex-shrink: 0; }
+    .rw-row input[type="number"] { width: 52px; padding: 2px 4px; background: #0d1b35;
+                                   color: #fff; border: 1px solid #4a6080; border-radius: 2px;
+                                   font-size: 12px; font-weight: bold; }
+    .rw-btn { width: calc(100% - 20px); margin: 4px 10px 0 10px; padding: 6px 4px;
+              border: none; border-radius: 3px; background: #2a4080; color: #fff;
+              font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; }
+    .rw-btn:hover { background: #3a5090; }
+
+    /* Canvas wrap — adjust for flyout */
+    #rwCanvasWrap { flex: 1; display: flex; align-items: center; justify-content: center;
+                   background: #c8c8c8; overflow: hidden; position: relative; }
+    #rwCanvas { background: #fff; cursor: crosshair; }
+
+    /* Countdown */
+    #rwCountdown { position: absolute; top: 12px; left: 50%;
+                   transform: translateX(-50%);
+                   font-size: 48px; font-weight: bold; color: #1E2E53;
+                   background: rgba(255,255,255,0.85); padding: 4px 24px;
+                   border-radius: 8px; border: 2px solid #1E2E53;
+                   opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+
+    /* ── Control Console v60 ─────────────────────────────────────────── */
+    #rwController { position: absolute; bottom: 0; left: 0; right: 0; height: 68px;
+               background: linear-gradient(180deg, #181b26 0%, #0f1118 100%);
+               display: flex; align-items: center;
+               padding: 0 8px; gap: 6px;
+               border-top: 2px solid #2a2d3e; z-index: 10;
+               box-shadow: 0 -3px 16px rgba(0,0,0,0.7); }
+
+    /* Buttons — clean flat face, instant depress on click */
+    .rw-drive-btn { display: flex; align-items: center; justify-content: center;
+                    border: none; border-radius: 7px; cursor: pointer;
+                    transition: transform 0.07s ease, box-shadow 0.07s ease, filter 0.08s ease;
+                    position: relative; overflow: hidden;
+                    width: 40px; height: 44px; flex-shrink: 0; padding: 0; }
+    /* Top highlight only — no bottom shadow */
+    .rw-drive-btn::before { content: ''; position: absolute; top: 0; left: 1px; right: 1px; height: 40%;
+                            background: linear-gradient(to bottom, rgba(255,255,255,0.30), rgba(255,255,255,0.04));
+                            border-radius: 6px 6px 0 0; pointer-events: none; z-index: 1; }
+    .rw-drive-btn:hover   { filter: brightness(1.15); transform: translateY(-1px); }
+    /* Clean snap depress — no gradual travel, just instant down then snap back */
+    .rw-drive-btn:active  { transform: translateY(2px) !important;
+                            box-shadow: none !important;
+                            filter: brightness(0.80) !important;
+                            transition: transform 0.04s ease, box-shadow 0.04s ease !important; }
+    .rw-drive-btn:disabled { opacity: 0.25; cursor: not-allowed; transform: none !important; filter: none !important; }
+    .rw-drive-btn svg { position: relative; z-index: 2; }
+
+    /* GO — green, large, bold GO text, BLACK text per key convention */
+    .go-btn { background: linear-gradient(175deg, #00e020 8%, #00BB00 48%, #007700 100%);
+              box-shadow: 0 4px 0 #004400, 0 5px 12px rgba(0,187,0,0.5), inset 0 1px 0 rgba(255,255,255,0.28);
+              width: 56px; height: 52px; }
+    .go-btn .go-lbl { font-family: Arial, sans-serif; font-size: 22px; font-weight: 900;
+                      color: #000; letter-spacing: 2px; position: relative; z-index: 2;
+                      line-height: 1; }
+    .go-btn.rw-active { box-shadow: 0 1px 0 #004400, 0 0 20px rgba(0,255,0,0.75);
+                        transform: translateY(2px); animation: cc-pulse-green 1.4s ease-in-out infinite; }
+
+    /* PAUSE */
+    .pause-btn  { background: linear-gradient(175deg, #ffd84a 8%, #ffb300 48%, #b37800 100%);
+                  box-shadow: 0 4px 0 #6b4700, 0 5px 10px rgba(255,179,0,0.4), inset 0 1px 0 rgba(255,255,255,0.28); }
+    .pause-btn.rw-active { box-shadow: 0 1px 0 #6b4700, 0 0 14px rgba(255,200,0,0.8); transform: translateY(2px); }
+
+    /* CONT */
+    .resume-btn { background: linear-gradient(175deg, #60d8ff 8%, #00A0E3 48%, #005f8a 100%);
+                  box-shadow: 0 4px 0 #003a55, 0 5px 10px rgba(0,160,227,0.4), inset 0 1px 0 rgba(255,255,255,0.28); }
+
+    /* STEP */
+    .step-btn   { background: linear-gradient(175deg, #a0aaff 8%, #6670ee 48%, #2a2fa8 100%);
+                  box-shadow: 0 4px 0 #101360, 0 5px 10px rgba(102,112,238,0.4), inset 0 1px 0 rgba(255,255,255,0.28); }
+
+    /* RESET */
+    .reset-btn  { background: linear-gradient(175deg, #ff7070 8%, #e53030 48%, #8b0000 100%);
+                  box-shadow: 0 4px 0 #4a0000, 0 5px 10px rgba(229,48,48,0.4), inset 0 1px 0 rgba(255,255,255,0.28); }
+
+    /* Clicker + Progress toggles */
+    #ccTogglesWrap  { display: flex; flex-direction: column; align-items: center;
+                      justify-content: center; flex-shrink: 0; padding: 0 8px; gap: 4px; }
+    .cc-toggle-col  { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .cc-toggle-row  { display: flex; align-items: center; gap: 5px; }
+    .cc-toggle-lbl  { font-family: Arial, sans-serif; font-size: 8px; font-weight: bold;
+                      color: #4a6aaa; letter-spacing: 0.4px; text-transform: uppercase;
+                      white-space: nowrap; }
+    .cc-tog         { position: relative; width: 28px; height: 14px; cursor: pointer; display: block; flex-shrink: 0; }
+    .cc-tog input   { opacity: 0; width: 0; height: 0; position: absolute; }
+    .cc-tog-track   { position: absolute; inset: 0; background: #2a2d3e;
+                      border-radius: 7px; border: 1px solid #3a4060; transition: background 0.2s; }
+    .cc-tog input:checked + .cc-tog-track { background: #00BB00; border-color: #007700; }
+    .cc-tog-track::before { content: ''; position: absolute; width: 10px; height: 10px;
+                            background: #fff; border-radius: 50%; top: 1px; left: 1px;
+                            transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .cc-tog input:checked + .cc-tog-track::before { transform: translateX(13px); }
+
+    /* ── Execution display ── */
+    #rwExecDisplay { flex: 1; display: flex; flex-direction: column; justify-content: center;
+                     gap: 2px; min-width: 0; overflow: hidden; padding: 2px 0; }
+
+    /* Labels row — all bottom-aligned, Current has context line above it */
+    #rwFieldLabels { display: flex; gap: 4px; align-items: flex-end; }
+    .field-label    { flex: 1; font-family: Arial, sans-serif; font-size: 8px; font-weight: bold;
+                      letter-spacing: 0.8px; color: #4a6aaa; text-transform: uppercase;
+                      text-align: center; white-space: nowrap; }
+    /* Spacer so NEXT and DONE labels sit at the same baseline as CURRENT+context */
+    .field-label-pad { display: block; min-height: 12px; }
+    #ccContextLine  { display: block; font-family: Arial, sans-serif; font-size: 8px;
+                      font-weight: bold; color: #c8d8ff; text-align: center;
+                      min-height: 12px; line-height: 12px; letter-spacing: 0.3px; }
+
+    /* Fields */
+    #rwExecSlots { display: flex; gap: 4px; }
+    .exec-slot { flex: 1; border-radius: 5px; background: #fff;
+                 border: 1px solid #c8d0e0;
+                 display: flex; flex-direction: row; align-items: center;
+                 justify-content: center; gap: 3px;
+                 padding: 3px 5px; min-height: 30px;
+                 box-shadow: inset 0 1px 3px rgba(0,0,0,0.07); }
+    .exec-slot.slot-next { background: #f4f6ff; border-color: #c0c8e0; opacity: 0.8; }
+    .exec-slot.slot-cur  { background: #fff; border-color: #4a6aaa;
+                           box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 0 7px rgba(74,106,170,0.25); }
+    .exec-slot.slot-done { background: #f2f8f2; border-color: #88bb88; opacity: 0.75; }
+    .exec-slot.slot-error { background: #fff0f0; border-color: #cc4444;
+                            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 0 7px rgba(204,68,68,0.35); }
+    .slot-error-txt { font-family: Arial, sans-serif; font-weight: bold;
+                      font-size: 11px; color: #cc2222; letter-spacing: 1px; }
+    .slot-rsg     { font-family: Arial, sans-serif; font-weight: bold; font-size: 11px;
+                    color: #5a7aaa; letter-spacing: 1px; }
+    .exec-slot.slot-cur .slot-rsg { color: #1E2E53; font-size: 12px; }
+    .slot-done-txt { font-family: Arial, sans-serif; font-weight: bold;
+                     font-size: 10px; color: #44aa66; letter-spacing: 0.5px; }
+    .exec-slot img.slot-key { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
+
+    /* Value square — whole value in one yellow square, square corners */
+    .slot-val-box { display: inline-flex; align-items: center; justify-content: center;
+                    min-width: 18px; height: 18px; padding: 0 4px;
+                    background: #FFD700; border: 1px solid #b8960a; border-radius: 0;
+                    font-family: Arial, sans-serif; font-size: 10px; font-weight: bold;
+                    color: #000; line-height: 1; flex-shrink: 0; }
+
+    /* Field glow by category */
+    .exec-slot.slot-cur[data-cat="move"]  { border-color: #00A0E3; box-shadow: 0 0 8px rgba(0,160,227,0.3); }
+    .exec-slot.slot-cur[data-cat="pen"]   { border-color: #9b59b6; box-shadow: 0 0 8px rgba(155,89,182,0.3); }
+    .exec-slot.slot-cur[data-cat="time"]  { border-color: #e6ac00; box-shadow: 0 0 8px rgba(230,172,0,0.25); }
+    .exec-slot.slot-cur[data-cat="sound"] { border-color: #cc00cc; box-shadow: 0 0 8px rgba(204,0,204,0.25); }
+    .exec-slot.slot-cur[data-cat="stop"]  { border-color: #e53030; box-shadow: 0 0 8px rgba(229,48,48,0.3); }
+
+    @keyframes cc-pulse-green { 0%,100%{filter:brightness(1.1)} 50%{filter:brightness(1.45)} }
+
+    /* Big Country mode */
+    body.rw-runmode #menuBar,
+    body.rw-runmode #headerBar,
+    body.rw-runmode #modeBar,
+    body.rw-runmode #rwSidebar { display: none !important; }
+    body.rw-runmode #rwController    { left: 0; }
+    body.rw-runmode #rwCanvasWrap { background: #fff; }
+    body.rw-runmode #rwControllerTab { left: 0; }
+
+    /* Fullscreen / Maximised Workspace mode */
+    body.rw-fullscreen #headerBar,
+    body.rw-fullscreen #tabBar,
+    body.rw-fullscreen #modeBar,
+    body.rw-fullscreen #menuBar,
+    body.rw-fullscreen #rwSidebar { display: none !important; }
+    body.rw-fullscreen #rwController    { left: 0; }
+    body.rw-fullscreen #rwControllerTab { left: 0; }
+    body.rw-fullscreen #rwCanvasWrap    { background: #fff; }
+
+    /* Floating restore-header strip — hover at very top of screen */
+    #fsRestoreStrip {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(to bottom, #1E2E53, transparent);
+      z-index: 9999; cursor: pointer; transition: height 0.15s;
+    }
+    #fsRestoreStrip:hover { height: 32px; background: #1E2E53; }
+    #fsRestoreStrip:hover::after {
+      content: '▼  Restore header';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      color: #aac4ff; font-size: 11px; font-weight: bold; white-space: nowrap;
+      pointer-events: none;
+    }
+    body.rw-fullscreen #fsRestoreStrip { display: block; }
+
+    /* Fullscreen toggle button (inside Control Console) */
+    #ccFullscreenBtn {
+      background: #2a4080; border: 1px solid #4a6aaa; color: #aac4ff;
+      cursor: pointer; border-radius: 5px;
+      width: 44px; height: 44px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s; padding: 0;
+    }
+    #ccFullscreenBtn:hover { background: #3a5090; color: #fff; }
+    #ccFullscreenBtn svg { width: 22px; height: 22px; }
+    #rwRunModeBtn { background: #2a4080; border: 1px solid #4a6aaa; color: #aac4ff;
+                    font-size: 11px; font-weight: bold; padding: 5px 10px;
+                    border-radius: 5px; cursor: pointer; white-space: nowrap; }
+    #rwRunModeBtn:hover { background: #3a5090; color: #fff; }
+    #rwControllerTab  { position: absolute; bottom: 0; left: 0; background: #1E2E53;
+                   color: #aac4ff; font-size: 11px; padding: 3px 12px;
+                   border-top: 2px solid #0a1a3a; border-right: 1px solid #2a4080;
+                   cursor: pointer; display: none; border-radius: 0 4px 0 0; z-index: 10; }
+    #rwControllerTab:hover { color: #fff; }
+
+    /* Settings panel — two column layout */
+    #panel-settings.active { display: flex !important; position: absolute;
+                              top: 0; left: 0; right: 0; bottom: 0; }
+    #settingsNav { width: 160px; flex-shrink: 0; background: #1E2E53;
+                   display: flex; flex-direction: column; padding-top: 8px; }
+    .settings-nav-btn { width: 100%; padding: 10px 16px; border: none; cursor: pointer;
+                        background: transparent; color: #aac4ff; font-size: 13px;
+                        font-weight: bold; text-align: left; border-left: 3px solid transparent;
+                        border-bottom: 1px solid #2a3f6f; }
+    .settings-nav-btn:hover  { background: #2a3f6f; color: #fff; }
+    .settings-nav-btn.active { background: #2a4080; color: #fff; border-left-color: #00A0E3; }
+    #settingsContent { flex: 1; overflow-y: auto; background: #f8f9fc; padding: 20px 24px; }
+    .settings-panel { display: none; }
+    .settings-panel.active { display: block; }
+    .settings-title { font-size: 16px; font-weight: bold; color: #1E2E53;
+                      margin-bottom: 16px; padding-bottom: 8px;
+                      border-bottom: 2px solid #1E2E53; }
+    .settings-section { background: #fff; border-radius: 6px; padding: 14px 16px;
+                        margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .settings-section-label { font-size: 12px; font-weight: bold; color: #1E2E53;
+                               text-transform: uppercase; letter-spacing: 0.5px;
+                               margin-bottom: 10px; }
+    .settings-row { display: flex; align-items: center; justify-content: space-between;
+                    margin-bottom: 8px; }
+    .settings-row label { font-size: 13px; color: #333; }
+    .settings-input { font-size: 13px; padding: 4px 8px; border: 1px solid #ccc;
+                      border-radius: 4px; background: #fff; min-width: 180px; }
+    .settings-about { font-size: 12px; color: #666; line-height: 1.8; }
+    .settings-about a { color: #1E2E53; }
+    /* Reuse rw-btn and rw-row inside settings panels */
+    #settingsContent .rw-btn { width: auto; margin: 4px 0 0 0; padding: 6px 14px;
+                                display: inline-block; }
+    #settingsContent .rw-row { padding: 4px 0; }
+    #settingsContent .rw-row label { color: #333; font-size: 13px; }
+    #settingsContent .rw-section-label { background: #e8edf5; color: #1E2E53;
+                                          padding: 4px 8px; margin-top: 8px;
+                                          border-radius: 3px; }
+    /* ══ SCENE BUILDER ════════════════════════════ */
+    /* Full-screen overlay when Scene Builder is active */
+    #sceneBuilderOverlay {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 100;
+      background: #1a1a2e;
+    }
+    #sceneBuilderOverlay.active { display: flex; flex-direction: column; }
+
+    #sbRecallArrow {
+      position: fixed; left: 0; top: 50%;
+      transform: translateY(-50%);
+      z-index: 200;
+      width: 18px; height: 48px;
+      background: #1E2E53; color: #aac4ff;
+      border: none; border-radius: 0 6px 6px 0;
+      cursor: pointer; font-size: 14px;
+      display: none; align-items: center; justify-content: center;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.4);
+    }
+    #sbRecallArrow.visible { display: flex; }
+    #sbRecallArrow:hover { background: #2a4080; color: #fff; }
+
+    /* Canvas area fills everything between top bar and bottom bar */
+    #sbCanvasArea {
+      flex: 1; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: #111827;
+    }
+    #sbCanvas {
+      cursor: crosshair;
+      image-rendering: pixelated;
+    }
+
+    /* Bottom control bar */
+    #sbBottomBar {
+      height: 52px; flex-shrink: 0;
+      background: linear-gradient(180deg, #1a2a4a 0%, #0d1b35 100%);
+      border-top: 2px solid #4a6aaa;
+      display: flex; align-items: center; padding: 0 16px; gap: 16px;
+    }
+    .sb-bottom-btn {
+      padding: 6px 16px; border: none; border-radius: 5px;
+      font-size: 12px; font-weight: bold; cursor: pointer; color: #fff;
+      transition: filter 0.1s;
+    }
+    .sb-bottom-btn:hover { filter: brightness(1.2); }
+    .sb-bottom-btn.primary   { background: #00A0E3; }
+    .sb-bottom-btn.secondary { background: #2a4080; }
+    .sb-bottom-btn.danger    { background: #cc3030; }
+    .sb-bottom-btn.success   { background: #22aa44; }
+    #sbDrawInfo {
+      font-size: 12px; color: #6a9fd8;
+      font-family: 'Courier New', monospace;
+      min-width: 160px;
+    }
+    .sb-divider { width: 1px; height: 28px; background: #2a4080; flex-shrink: 0; }
+
+    /* Floating dialogue */
+    #sbDialogue {
+      position: fixed;
+      top: 80px; right: 24px;
+      width: 220px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      background: #162240;
+      border: 1px solid #2a4080;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      z-index: 150;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #sbDialogue.open { display: flex; }
+    #sbDlgHeader {
+      background: #0d1b35;
+      border-bottom: 1px solid #2a4080;
+      padding: 8px 12px;
+      display: flex; align-items: center; gap: 8px;
+      cursor: move; user-select: none;
+    }
+    #sbDlgHeader .dlg-title {
+      font-size: 12px; font-weight: bold; color: #aac4ff;
+      text-transform: uppercase; letter-spacing: 1px; flex: 1;
+    }
+    #sbDlgClose {
+      width: 20px; height: 20px; border: none; border-radius: 3px;
+      background: #cc3030; color: #fff; font-size: 12px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    #sbDlgBody { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .sb-dlg-label {
+      font-size: 10px; color: #6a9fd8; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 2px;
+    }
+    .sb-dlg-row {
+      display: flex; align-items: center; gap: 8px; justify-content: space-between;
+    }
+    .sb-dlg-row label { font-size: 12px; color: #ccd8ff; }
+    .sb-slider-wrap { display: flex; align-items: center; gap: 6px; flex: 1; }
+    .sb-slider-wrap input[type=range] {
+      flex: 1; accent-color: #00A0E3;
+    }
+    .sb-slider-val {
+      font-size: 12px; color: #fff; font-family: 'Courier New', monospace;
+      min-width: 28px; text-align: right;
+    }
+    .sb-name-input {
+      width: 100%; padding: 4px 8px; background: #0d1b35;
+      border: 1px solid #4a6aaa; border-radius: 3px;
+      color: #fff; font-size: 13px; font-weight: bold;
+    }
+    .sb-tool-row { display: none; } /* Tools moved to Settings > Scene */
+    .sb-tool-btn {
+      flex: 1; padding: 6px 4px; border: 2px solid transparent;
+      border-radius: 4px; background: #1e3060; color: #aac4ff;
+      font-size: 11px; font-weight: bold; cursor: pointer; text-align: center;
+    }
+    .sb-tool-btn:hover { background: #2a4080; color: #fff; }
+    .sb-tool-btn.active {
+      background: #00A0E3; color: #fff; border-color: #fff;
+    }
+    .sb-size-info {
+      background: #0d1b35; border-radius: 4px; padding: 6px 10px;
+      font-family: 'Courier New', monospace; font-size: 12px;
+      color: #44aaff; text-align: center; line-height: 1.6;
+    }
+    .sb-toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .sb-toggle {
+      position: relative; width: 36px; height: 20px;
+      display: inline-block; flex-shrink: 0;
+    }
+    .sb-toggle input { display: none; }
+    .sb-toggle-slider {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: #2a4080; border-radius: 10px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sb-toggle-slider:before {
+      content: ''; position: absolute;
+      width: 14px; height: 14px; left: 3px; top: 3px;
+      background: #fff; border-radius: 50%; transition: transform 0.2s;
+    }
+    .sb-toggle input:checked + .sb-toggle-slider { background: #00A0E3; }
+    .sb-toggle input:checked + .sb-toggle-slider:before { transform: translateX(16px); }
+
+    #modeBar { display: flex; align-items: center; gap: 10px;
+               background: #1E2E53; border-bottom: 1px solid #2a4080;
+               padding: 5px 10px; flex-shrink: 0; }
+    #modeBar label { color: #aac4ff; font-size: 12px; font-weight: bold; white-space: nowrap; }
+    #modeSelect { font-size: 12px; font-weight: bold; padding: 4px 8px;
+                  background: #0d1b35; color: #fff;
+                  border: 1px solid #4a6080; border-radius: 4px; cursor: pointer; }
+    #modeDesc { font-size: 11px; color: #6a8cbf; font-style: italic; }

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RBB Engine Tests</title>
+  <style>
+    body { font-family: monospace; background: #0d1b35; color: #aac4ff; padding: 24px; }
+    h1   { color: #fff; font-size: 18px; margin-bottom: 16px; }
+    .suite   { margin-bottom: 20px; }
+    .suite-name { color: #6a9fd8; font-size: 13px; font-weight: bold; margin-bottom: 6px; }
+    .pass { color: #4caf50; }
+    .fail { color: #f44336; }
+    .result  { font-size: 12px; margin: 2px 0 2px 16px; }
+    #summary { margin-top: 20px; font-size: 14px; border-top: 1px solid #2a4080; padding-top: 12px; }
+  </style>
+</head>
+<body>
+<h1>RBB Engine Tests</h1>
+<div id="output"></div>
+<div id="summary"></div>
+
+<!--
+  NOTE: This file must be served from a local web server, not opened via file://.
+  From the project root run:  python -m http.server 8080
+  Then open:                  http://localhost:8080/test/test.html
+-->
+
+<!-- Load only the modules under test (no Blockly, no DOM-dependent code) -->
+<script src="../js/core/state.js"></script>
+<script src="../js/keys.js"></script>
+
+<script>
+'use strict';
+
+// ─── Minimal test runner ────────────────────────────────────────────────────
+var _suites = [];
+var _current = null;
+
+function suite(name, fn) {
+  _current = { name: name, tests: [] };
+  _suites.push(_current);
+  fn();
+}
+
+function test(desc, fn) {
+  var result = { desc: desc, pass: false, error: null };
+  try {
+    fn();
+    result.pass = true;
+  } catch(e) {
+    result.error = e.message || String(e);
+  }
+  _current.tests.push(result);
+}
+
+function assert(condition, msg) {
+  if (!condition) throw new Error(msg || 'Assertion failed');
+}
+
+function assertEqual(a, b, msg) {
+  if (a !== b) throw new Error((msg || '') + ' — expected ' + JSON.stringify(b) + ', got ' + JSON.stringify(a));
+}
+
+function assertApprox(a, b, tol, msg) {
+  tol = tol || 0.0001;
+  if (Math.abs(a - b) > tol) throw new Error((msg || '') + ' — expected ≈' + b + ', got ' + a);
+}
+
+// ─── Test suites ────────────────────────────────────────────────────────────
+
+suite('state — initial values', function() {
+  test('roamer starts at origin', function() {
+    assertEqual(appState.roamer.x, 0, 'x');
+    assertEqual(appState.roamer.y, 0, 'y');
+    assertEqual(appState.roamer.heading, 0, 'heading');
+  });
+  test('program not running on load', function() {
+    assertEqual(appState.program.isRunning, false);
+    assertEqual(appState.program.isPaused, false);
+  });
+  test('default grid is 10×10', function() {
+    assertEqual(appState.settings.gridCols, 10);
+    assertEqual(appState.settings.gridRows, 10);
+  });
+  test('character mode is default', function() {
+    assertEqual(appState.character.mode, 'default');
+  });
+});
+
+suite('dispatch — SET_POSITION', function() {
+  test('moves roamer to given coordinates', function() {
+    dispatch({ type: 'SET_POSITION', x: 3, y: -2 });
+    assertEqual(appState.roamer.x, 3, 'x');
+    assertEqual(appState.roamer.y, -2, 'y');
+    // restore
+    dispatch({ type: 'SET_POSITION', x: 0, y: 0 });
+  });
+});
+
+suite('dispatch — SET_HEADING', function() {
+  test('sets heading to value', function() {
+    dispatch({ type: 'SET_HEADING', heading: 90 });
+    assertEqual(appState.roamer.heading, 90);
+    dispatch({ type: 'SET_HEADING', heading: 0 });
+  });
+  test('normalises heading above 360', function() {
+    dispatch({ type: 'SET_HEADING', heading: 450 });
+    assertEqual(appState.roamer.heading, 90, 'wrap above 360');
+    dispatch({ type: 'SET_HEADING', heading: 0 });
+  });
+  test('normalises negative heading', function() {
+    dispatch({ type: 'SET_HEADING', heading: -90 });
+    assertEqual(appState.roamer.heading, 270, 'wrap negative');
+    dispatch({ type: 'SET_HEADING', heading: 0 });
+  });
+});
+
+suite('dispatch — SET_PEN', function() {
+  test('sets pen down', function() {
+    dispatch({ type: 'SET_PEN', down: true });
+    assertEqual(appState.settings.penDown, true);
+    dispatch({ type: 'SET_PEN', down: false });
+  });
+  test('sets pen colour', function() {
+    dispatch({ type: 'SET_PEN', colour: '#ff0000' });
+    assertEqual(appState.settings.penColour, '#ff0000');
+    dispatch({ type: 'SET_PEN', colour: '#000000' });
+  });
+  test('partial update does not reset other fields', function() {
+    dispatch({ type: 'SET_PEN', down: true, colour: '#0000ff', width: 3 });
+    dispatch({ type: 'SET_PEN', width: 5 });
+    assertEqual(appState.settings.penDown, true,   'penDown unchanged');
+    assertEqual(appState.settings.penColour, '#0000ff', 'penColour unchanged');
+    assertEqual(appState.settings.penWidth, 5, 'penWidth updated');
+    // restore
+    dispatch({ type: 'SET_PEN', down: false, colour: '#000000', width: 1 });
+  });
+});
+
+suite('dispatch — SET_GRID', function() {
+  test('updates grid dimensions', function() {
+    dispatch({ type: 'SET_GRID', cols: 5, rows: 7 });
+    assertEqual(appState.settings.gridCols, 5);
+    assertEqual(appState.settings.gridRows, 7);
+    dispatch({ type: 'SET_GRID', cols: 10, rows: 10 });
+  });
+  test('partial update preserves other grid props', function() {
+    dispatch({ type: 'SET_GRID', cols: 10, rows: 10, boundary: 'contained' });
+    dispatch({ type: 'SET_GRID', boundary: 'wrap' });
+    assertEqual(appState.settings.gridCols, 10, 'cols preserved');
+    assertEqual(appState.settings.boundaryType, 'wrap', 'boundary updated');
+    dispatch({ type: 'SET_GRID', boundary: 'contained' });
+  });
+});
+
+suite('dispatch — SET_CHARACTER', function() {
+  test('switches to custom mode', function() {
+    dispatch({ type: 'SET_CHARACTER', mode: 'custom', svgString: '<svg/>' });
+    assertEqual(appState.character.mode, 'custom');
+    assertEqual(appState.character.svgString, '<svg/>');
+    dispatch({ type: 'SET_CHARACTER', mode: 'default', svgString: '' });
+  });
+  test('rotation is set correctly', function() {
+    dispatch({ type: 'SET_CHARACTER', rotation: 180 });
+    assertEqual(appState.character.rotation, 180);
+    dispatch({ type: 'SET_CHARACTER', rotation: 0 });
+  });
+});
+
+suite('dispatch — SET_RUNNING / SET_PAUSED', function() {
+  test('sets running state', function() {
+    dispatch({ type: 'SET_RUNNING', value: true });
+    assertEqual(appState.program.isRunning, true);
+    dispatch({ type: 'SET_RUNNING', value: false });
+  });
+  test('sets paused state', function() {
+    dispatch({ type: 'SET_PAUSED', value: true });
+    assertEqual(appState.program.isPaused, true);
+    dispatch({ type: 'SET_PAUSED', value: false });
+  });
+});
+
+suite('dispatch — SET_WORKSPACE_XML', function() {
+  test('stores workspace XML', function() {
+    var xml = '<xml><block type="block_fd"/></xml>';
+    dispatch({ type: 'SET_WORKSPACE_XML', xml: xml });
+    assertEqual(appState.program.workspaceXml, xml);
+    dispatch({ type: 'SET_WORKSPACE_XML', xml: '' });
+  });
+});
+
+suite('getState — snapshot isolation', function() {
+  test('getState returns a copy, not the live object', function() {
+    var snap = getState();
+    snap.roamer.x = 999;
+    assertEqual(appState.roamer.x, 0, 'mutation of snapshot does not affect appState');
+  });
+});
+
+suite('dispatch — unknown action', function() {
+  test('unknown action does not throw', function() {
+    // Should warn but not throw
+    try {
+      dispatch({ type: 'DOES_NOT_EXIST' });
+    } catch(e) {
+      throw new Error('dispatch threw on unknown action: ' + e.message);
+    }
+  });
+});
+
+// ─── Render results ─────────────────────────────────────────────────────────
+(function render() {
+  var out = document.getElementById('output');
+  var total = 0, passed = 0;
+
+  _suites.forEach(function(s) {
+    var div = document.createElement('div');
+    div.className = 'suite';
+    var h = document.createElement('div');
+    h.className = 'suite-name';
+    h.textContent = s.name;
+    div.appendChild(h);
+
+    s.tests.forEach(function(t) {
+      total++;
+      if (t.pass) passed++;
+      var p = document.createElement('div');
+      p.className = 'result ' + (t.pass ? 'pass' : 'fail');
+      p.textContent = (t.pass ? '✓ ' : '✗ ') + t.desc + (t.error ? ' — ' + t.error : '');
+      div.appendChild(p);
+    });
+    out.appendChild(div);
+  });
+
+  var sum = document.getElementById('summary');
+  var allPass = passed === total;
+  sum.style.color = allPass ? '#4caf50' : '#f44336';
+  sum.textContent = passed + ' / ' + total + ' tests passed' + (allPass ? ' — ALL PASS ✓' : ' — FAILURES ABOVE ✗');
+})();
+</script>
+</body>
+</html>
