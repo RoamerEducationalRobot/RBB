@@ -897,111 +897,189 @@
 
       <!-- Select -->
       <button class="cd-tool-btn" id="cdToolSelect" title="Select" onclick="cdSetTool('select')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="4,2 4,16 8,12 11,18 13,17 10,11 15,11" fill="#aac4ff"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="4,1 4,17 8,13 11,20 14,18 11,11 17,11"
+                   fill="#7EC8E3" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/>
         </svg>
       </button>
 
-      <!-- Rectangle -->
+      <!-- Rectangle — square corners, cyan outline, transparent -->
       <button class="cd-tool-btn" id="cdToolRect" title="Rectangle" onclick="cdSetTool('rect')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="4" width="16" height="12" rx="1" fill="none" stroke="#4fc3f7" stroke-width="2.5"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="5" width="18" height="13"
+                fill="none" stroke="#00E5FF" stroke-width="2.5"/>
         </svg>
       </button>
 
-      <!-- Polygon -->
+      <!-- Polygon — bright green outline, no vertex dots -->
       <button class="cd-tool-btn" id="cdToolPolygon" title="Polygon — click points, double-click to close" onclick="cdSetTool('polygon')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="10,2 18,8 15,17 5,17 2,8" fill="none" stroke="#81d4fa" stroke-width="2.5"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="11,2 20,8 17,19 5,19 2,8"
+                   fill="none" stroke="#69FF47" stroke-width="2.5"/>
         </svg>
       </button>
 
-      <!-- Circle -->
+      <!-- Circle — white outline, transparent, circular -->
       <button class="cd-tool-btn" id="cdToolCircle" title="Circle / Ellipse" onclick="cdSetTool('circle')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="10" cy="10" rx="8" ry="6" fill="none" stroke="#4fc3f7" stroke-width="2.5"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="9"
+                  fill="none" stroke="#ffffff" stroke-width="2.5"/>
         </svg>
       </button>
 
-      <!-- Line -->
+      <!-- Line — bright yellow, clean -->
       <button class="cd-tool-btn" id="cdToolLine" title="Line" onclick="cdSetTool('line')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <line x1="2" y1="18" x2="18" y2="2" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <line x1="3" y1="19" x2="19" y2="3"
+                stroke="#111" stroke-width="4" stroke-linecap="round"/>
+          <line x1="3" y1="19" x2="19" y2="3"
+                stroke="#FFE135" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </button>
 
-      <!-- Pencil -->
+      <!-- Pencil — clear tip, wiggly line -->
       <button class="cd-tool-btn" id="cdToolPencil" title="Pencil — freehand" onclick="cdSetTool('pencil')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <rect x="8" y="2" width="5" height="11" rx="1" fill="#ffcc80" stroke="#ff9800" stroke-width="1"/>
-          <polygon points="8,13 13,13 10.5,18" fill="#ffb74d"/>
-          <rect x="8" y="2" width="5" height="3" rx="1" fill="#ef9a9a"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <g transform="rotate(-40, 11, 11) translate(0,-1)">
+            <rect x="9" y="2"  width="4" height="2.5" rx="1"
+                  fill="#FF8A80" stroke="#111" stroke-width="1"/>
+            <rect x="9" y="4"  width="4" height="9"
+                  fill="#FFE135" stroke="#111" stroke-width="1"/>
+            <rect x="9" y="13" width="4" height="2"
+                  fill="#F5CBA7" stroke="#111" stroke-width="0.8"/>
+            <polygon points="9,15 13,15 11,19"
+                     fill="#333" stroke="#111" stroke-width="0.8"/>
+            <polygon points="9.8,15.2 12.2,15.2 11,17.5" fill="#FFD699"/>
+          </g>
+          <path d="M2,20 Q4,17 6,19 Q8,21 10,18"
+                stroke="#FFE135" stroke-width="1.5" fill="none"
+                stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
-      <!-- Paint Brush -->
+      <!-- Paint Brush — wide flat orange bristles, blue handle, like reference image 3 -->
       <button class="cd-tool-btn" id="cdToolBrush" title="Paint Brush" onclick="cdSetTool('brush')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <line x1="6" y1="14" x2="16" y2="4" stroke="#a5d6a7" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="4.5" cy="15.5" r="3.5" fill="#66bb6a"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <g transform="rotate(-40, 11, 11)">
+            <!-- Handle — blue, rounded -->
+            <rect x="9" y="1" width="4" height="10" rx="2"
+                  fill="#5BB8F5" stroke="#111" stroke-width="1.2"/>
+            <!-- Ferrule — grey metal band -->
+            <rect x="8.5" y="10" width="5" height="3" rx="0.5"
+                  fill="#CFD8DC" stroke="#111" stroke-width="1"/>
+            <!-- Wide flat bristle head — orange -->
+            <rect x="6" y="13" width="10" height="7" rx="1"
+                  fill="#FF9800" stroke="#111" stroke-width="1.5"/>
+            <!-- Bristle lines -->
+            <line x1="8.5"  y1="13.5" x2="8.5"  y2="19.5" stroke="#E65100" stroke-width="0.7"/>
+            <line x1="11"   y1="13.5" x2="11"   y2="19.5" stroke="#E65100" stroke-width="0.7"/>
+            <line x1="13.5" y1="13.5" x2="13.5" y2="19.5" stroke="#E65100" stroke-width="0.7"/>
+          </g>
         </svg>
       </button>
 
-      <!-- Colour Spray -->
+      <!-- Spray can — fine dots spread wide -->
       <button class="cd-tool-btn" id="cdToolSpray" title="Colour Spray" onclick="cdSetTool('spray')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="10" width="8" height="8" rx="1" fill="#ce93d8" stroke="#ab47bc" stroke-width="1"/>
-          <line x1="9" y1="13" x2="12" y2="13" stroke="#ce93d8" stroke-width="1.5"/>
-          <rect x="12" y="9" width="5" height="4" rx="1" fill="#ab47bc"/>
-          <circle cx="12" cy="6" r="1.5" fill="#f48fb1" opacity="0.9"/>
-          <circle cx="16" cy="5" r="1.2" fill="#f48fb1" opacity="0.7"/>
-          <circle cx="17" cy="8" r="1" fill="#ce93d8" opacity="0.8"/>
-          <circle cx="15" cy="3" r="1" fill="#f48fb1" opacity="0.6"/>
-          <circle cx="18" cy="11" r="0.8" fill="#ce93d8" opacity="0.5"/>
+        <svg width="24" height="22" viewBox="0 0 24 22" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="9" width="10" height="11" rx="2.5"
+                fill="#B3E5FC" stroke="#111" stroke-width="1.5"/>
+          <rect x="3" y="6" width="6" height="4" rx="1"
+                fill="#81D4FA" stroke="#111" stroke-width="1"/>
+          <rect x="9" y="7" width="4" height="2" rx="1"
+                fill="#546E7A" stroke="#111" stroke-width="0.8"/>
+          <circle cx="6" cy="13" r="2.5" fill="#FF5252" stroke="#111" stroke-width="1"/>
+          <circle cx="15" cy="3"  r="0.9" fill="#FFE135"/>
+          <circle cx="18" cy="2"  r="0.8" fill="#FFE135"/>
+          <circle cx="21" cy="3"  r="0.7" fill="#FFE135"/>
+          <circle cx="23" cy="5"  r="0.8" fill="#FFE135"/>
+          <circle cx="16" cy="6"  r="1"   fill="#FFE135"/>
+          <circle cx="19" cy="5"  r="0.9" fill="#FFE135"/>
+          <circle cx="22" cy="7"  r="0.7" fill="#FFE135"/>
+          <circle cx="14" cy="8"  r="0.8" fill="#FFE135"/>
+          <circle cx="17" cy="9"  r="0.9" fill="#FFE135"/>
+          <circle cx="20" cy="9"  r="0.7" fill="#FFE135"/>
+          <circle cx="23" cy="10" r="0.6" fill="#FFE135"/>
+          <circle cx="15" cy="11" r="0.7" fill="#FFE135"/>
+          <circle cx="18" cy="12" r="0.6" fill="#FFE135"/>
+          <circle cx="13" cy="5"  r="0.6" fill="#FFE135" opacity="0.7"/>
+          <circle cx="21" cy="12" r="0.5" fill="#FFE135" opacity="0.6"/>
         </svg>
       </button>
 
-      <!-- Paint Bucket / Fill -->
+      <!-- Paint Bucket — tilted cylinder, paint pooling underneath -->
       <button class="cd-tool-btn" id="cdToolFill" title="Fill — paint bucket" onclick="cdSetTool('fill')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4,14 L9,4 L11,6 L6,16 Z" fill="#ffeb3b" stroke="#f9a825" stroke-width="0.5"/>
-          <line x1="9" y1="4" x2="15" y2="10" stroke="#f9a825" stroke-width="2"/>
-          <line x1="11" y1="6" x2="17" y2="12" stroke="#f9a825" stroke-width="2"/>
-          <circle cx="17" cy="15" r="3" fill="#ffeb3b" stroke="#f9a825" stroke-width="1"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <g transform="rotate(-35, 9, 11)">
+            <!-- Handle arc -->
+            <path d="M5,4 Q9,0 13,4"
+                  fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="9" cy="4" r="1.2" fill="#555" stroke="#111" stroke-width="0.8"/>
+            <!-- Cylinder body -->
+            <rect x="3" y="4" width="12" height="10" rx="1"
+                  fill="#7EC8E3" stroke="#111" stroke-width="1.5"/>
+            <!-- Cylinder top ellipse -->
+            <ellipse cx="9" cy="4" rx="6" ry="1.8"
+                     fill="#B3E5FC" stroke="#111" stroke-width="1.2"/>
+            <!-- Shine -->
+            <line x1="5.5" y1="5.5" x2="5.5" y2="13"
+                  stroke="#fff" stroke-width="1" opacity="0.5" stroke-linecap="round"/>
+          </g>
+          <!-- Paint pool / puddle underneath -->
+          <ellipse cx="9" cy="20" rx="8" ry="2.5"
+                   fill="#69FF47" stroke="#111" stroke-width="1"/>
+          <!-- Pour stream -->
+          <path d="M5,15 Q4,18 6,19"
+                stroke="#69FF47" stroke-width="2" fill="none" stroke-linecap="round"/>
         </svg>
       </button>
 
       <!-- Eraser -->
       <button class="cd-tool-btn" id="cdToolEraser" title="Eraser" onclick="cdSetTool('eraser')">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="9" width="16" height="8" rx="2" fill="#ef9a9a" stroke="#e53935" stroke-width="1.5"/>
-          <line x1="8" y1="9" x2="8" y2="17" stroke="#e53935" stroke-width="1.2"/>
-          <line x1="2" y1="17" x2="18" y2="17" stroke="#b71c1c" stroke-width="1.5"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <g transform="rotate(-35, 11, 11)">
+            <rect x="3" y="7" width="16" height="8" rx="2"
+                  fill="#FF7043" stroke="#111" stroke-width="1.5"/>
+            <rect x="3" y="7" width="5.5" height="8" rx="2"
+                  fill="#CFD8DC" stroke="#111" stroke-width="1.5"/>
+            <line x1="8.5" y1="7" x2="8.5" y2="15"
+                  stroke="#111" stroke-width="1"/>
+          </g>
+          <line x1="2"  y1="20" x2="11" y2="20"
+                stroke="#90A4AE" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="5"  y1="22" x2="15" y2="22"
+                stroke="#90A4AE" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
         </svg>
       </button>
 
       <!-- Colour Wheel -->
       <button class="cd-tool-btn" id="cdToolColourWheel" title="Colour &amp; Options"
               onclick="cdTogglePickerFromWheel()" style="margin-top:6px;">
-        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
-          <path d="M11,11 L11,2 A9,9 0 0,1 18.36,6.5 Z" fill="#FF0000"/>
-          <path d="M11,11 L18.36,6.5 A9,9 0 0,1 18.36,15.5 Z" fill="#FF8C00"/>
-          <path d="M11,11 L18.36,15.5 A9,9 0 0,1 11,20 Z" fill="#FFEA00"/>
-          <path d="M11,11 L11,20 A9,9 0 0,1 3.64,15.5 Z" fill="#00CC00"/>
-          <path d="M11,11 L3.64,15.5 A9,9 0 0,1 3.64,6.5 Z" fill="#0066FF"/>
-          <path d="M11,11 L3.64,6.5 A9,9 0 0,1 11,2 Z" fill="#9900CC"/>
-          <circle cx="11" cy="11" r="4" fill="#1a2a4a"/>
+        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12,12 L12,2    A10,10 0 0,1 20.66,7  Z" fill="#FF5252" stroke="#111" stroke-width="0.5"/>
+          <path d="M12,12 L20.66,7  A10,10 0 0,1 20.66,17 Z" fill="#FF9800" stroke="#111" stroke-width="0.5"/>
+          <path d="M12,12 L20.66,17 A10,10 0 0,1 12,22   Z" fill="#FFE135" stroke="#111" stroke-width="0.5"/>
+          <path d="M12,12 L12,22    A10,10 0 0,1 3.34,17  Z" fill="#4CAF50" stroke="#111" stroke-width="0.5"/>
+          <path d="M12,12 L3.34,17  A10,10 0 0,1 3.34,7   Z" fill="#2196F3" stroke="#111" stroke-width="0.5"/>
+          <path d="M12,12 L3.34,7   A10,10 0 0,1 12,2     Z" fill="#9C27B0" stroke="#111" stroke-width="0.5"/>
+          <circle cx="12" cy="12" r="4" fill="#1a2a4a" stroke="#111" stroke-width="1"/>
         </svg>
       </button>
 
       <!-- Load image -->
       <button class="cd-tool-btn" id="cdToolLoad" title="Load image from file"
               onclick="document.getElementById('cdSvgFileInput').click()">
-        <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="5" width="16" height="13" rx="1" fill="none" stroke="#aac4ff" stroke-width="1.5"/>
-          <polyline points="7,12 10,7 13,12" stroke="#aac4ff" stroke-width="2" fill="none" stroke-linecap="round"/>
-          <line x1="10" y1="7" x2="10" y2="15" stroke="#aac4ff" stroke-width="2" stroke-linecap="round"/>
-          <line x1="5" y1="3" x2="15" y2="3" stroke="#aac4ff" stroke-width="1.5" stroke-linecap="round"/>
+        <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="5" width="18" height="15" rx="2"
+                fill="#E3F2FD" stroke="#111" stroke-width="1.5"/>
+          <polygon points="4,18 9,12 13,15 15,13 20,18"
+                   fill="#81C784" stroke="#111" stroke-width="0.8"/>
+          <circle cx="16" cy="9" r="2" fill="#FFE135" stroke="#111" stroke-width="0.8"/>
+          <circle cx="7" cy="9" r="5" fill="#1565C0" stroke="#111" stroke-width="1"/>
+          <polyline points="5,10 7,6 9,10"
+                    stroke="#fff" stroke-width="1.8" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="7" y1="6" x2="7" y2="13"
+                stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
       </button>
 

@@ -42,7 +42,7 @@ function openCharDesignerFromNav(btn) {
   if (cdMode === 'default') { setTimeout(cdShowDefaultOnCanvas, 0); }
   cdUpdatePreview();
   cdShowRoamerTab('library');
-  setTimeout(cdInitNavCube, 0);
+  setTimeout(cdInitNavCube, 100);  // small delay ensures overlay is visible before template inject
 }
 
 function closeCharDesigner() {
@@ -728,7 +728,7 @@ function cdUpdateViewCarousel() {
   var label = document.getElementById('cdViewLabel');
   if (label) label.textContent = v.label;
 
-  var canvas = document.getElementById('cdSVGCanvas');
+  var canvas = document.getElementById('cdCanvas');
   if (!canvas) return;
 
   // Ensure template group exists behind all drawing content
