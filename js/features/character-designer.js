@@ -74,14 +74,14 @@ function cdShowDefaultOnCanvas() {
   var body = document.createElementNS(ns, 'ellipse');
   body.setAttribute('cx', cx); body.setAttribute('cy', cy);
   body.setAttribute('rx', '81'); body.setAttribute('ry', '100');
-  body.setAttribute('fill', '#CFE8F3'); body.setAttribute('stroke', '#7ab8d4');
+  body.setAttribute('fill', '#E8DEB8'); body.setAttribute('stroke', '#B8A878');
   body.setAttribute('stroke-width', '2'); body.setAttribute('pointer-events', 'none');
   svg.appendChild(body);
 
   // Spigot circle
   var spigot = document.createElementNS(ns, 'circle');
   spigot.setAttribute('cx', cx); spigot.setAttribute('cy', cy); spigot.setAttribute('r', '60');
-  spigot.setAttribute('fill', '#bdd8e8'); spigot.setAttribute('stroke', '#7ab8d4');
+  spigot.setAttribute('fill', '#D8CEA8'); spigot.setAttribute('stroke', '#B8A878');
   spigot.setAttribute('stroke-width', '1.5'); spigot.setAttribute('pointer-events', 'none');
   svg.appendChild(spigot);
 
@@ -90,14 +90,14 @@ function cdShowDefaultOnCanvas() {
   keypad.setAttribute('x', '63'); keypad.setAttribute('y', '63');
   keypad.setAttribute('width', '74'); keypad.setAttribute('height', '74');
   keypad.setAttribute('rx', '2');
-  keypad.setAttribute('fill', '#a8c8dc'); keypad.setAttribute('stroke', '#7ab8d4');
+  keypad.setAttribute('fill', '#8899BB'); keypad.setAttribute('stroke', '#3C8B6E');
   keypad.setAttribute('stroke-width', '1.5'); keypad.setAttribute('pointer-events', 'none');
   svg.appendChild(keypad);
 
   // Forward direction triangle — at centre, points up (top = front), drawn last so it's on top
   var fwdTri = document.createElementNS(ns, 'polygon');
   fwdTri.setAttribute('points', '100,88 95,101 105,101');
-  fwdTri.setAttribute('fill', '#E86F61'); fwdTri.setAttribute('pointer-events', 'none');
+  fwdTri.setAttribute('fill', '#3C8B6E'); fwdTri.setAttribute('pointer-events', 'none');
   svg.appendChild(fwdTri);
 
   if (bg) bg.classList.add('cd-default-mode');
@@ -356,7 +356,7 @@ function cdUpdateCanvasPenHole() {
   dot.setAttribute('class', 'cd-pen-hole-dot');
   dot.setAttribute('r', '4');
   dot.setAttribute('fill', 'none');
-  dot.setAttribute('stroke', '#E86F61');
+  dot.setAttribute('stroke', '#3C8B6E');
   dot.setAttribute('stroke-width', '2');
   dot.setAttribute('pointer-events', 'none');
   // Character image mode: pen hole at 69% from top
@@ -395,14 +395,14 @@ function cdUpdatePreview() {
   var cellPx  = SIZE * 0.9;   // Roamer fills ~90% of preview box
   cvs.width  = SIZE;
   cvs.height = SIZE;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, SIZE, SIZE);
-  // Light grid lines for context
-  ctx.strokeStyle = 'rgba(0,160,227,0.25)';
-  ctx.lineWidth = 0.5;
-  var step = SIZE / 3;
-  for (var gx = 0; gx <= SIZE; gx += step) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, SIZE); ctx.stroke(); }
-  for (var gy = 0; gy <= SIZE; gy += step) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(SIZE, gy); ctx.stroke(); }
+  // Checkerboard background = transparent
+  var sq = 8;
+  for (var py = 0; py < SIZE; py += sq) {
+    for (var px = 0; px < SIZE; px += sq) {
+      ctx.fillStyle = ((px + py) / sq % 2 === 0) ? '#cccccc' : '#ffffff';
+      ctx.fillRect(px, py, sq, sq);
+    }
+  }
   var cx = SIZE / 2;
   var cy = SIZE / 2;
   if (cdMode === 'character' && rw.charSvg) {
@@ -432,16 +432,16 @@ function cdDrawDefaultTriangle(ctx, cx, cy, cellPx) {
   // Body ellipse (major axis vertical)
   ctx.beginPath();
   ctx.ellipse(0, 0, ry, r, 0, 0, Math.PI * 2);
-  ctx.fillStyle   = '#CFE8F3';
-  ctx.strokeStyle = '#7ab8d4';
+  ctx.fillStyle   = '#E8DEB8';
+  ctx.strokeStyle = '#B8A878';
   ctx.lineWidth   = 1.5;
   ctx.fill();
   ctx.stroke();
   // Spigot
   ctx.beginPath();
   ctx.arc(0, 0, r * 0.6, 0, Math.PI * 2);
-  ctx.fillStyle   = '#bdd8e8';
-  ctx.strokeStyle = '#7ab8d4';
+  ctx.fillStyle   = '#D8CEA8';
+  ctx.strokeStyle = '#B8A878';
   ctx.lineWidth   = 1;
   ctx.fill();
   ctx.stroke();
@@ -449,8 +449,8 @@ function cdDrawDefaultTriangle(ctx, cx, cy, cellPx) {
   var kh = r * 0.37, kw = ry * 0.457, kr = 1;  // essentially square corners
   ctx.beginPath();
   ctx.roundRect(-kw, -kh, kw * 2, kh * 2, kr);
-  ctx.fillStyle   = '#a8c8dc';
-  ctx.strokeStyle = '#7ab8d4';
+  ctx.fillStyle   = '#8899BB';
+  ctx.strokeStyle = '#B8A878';
   ctx.lineWidth   = 1;
   ctx.fill();
   ctx.stroke();
@@ -461,7 +461,7 @@ function cdDrawDefaultTriangle(ctx, cx, cy, cellPx) {
   ctx.lineTo(-tS * 0.7, tS * 0.5);
   ctx.lineTo( tS * 0.7, tS * 0.5);
   ctx.closePath();
-  ctx.fillStyle = '#E86F61';
+  ctx.fillStyle = '#3C8B6E';
   ctx.fill();
   ctx.restore();
 }
@@ -612,7 +612,7 @@ function cdUpdatePreviewFromImg(charImg) {
   if (rw.showPenHole) {
     ctx.beginPath();
     ctx.arc(0, -dh / 2 + dh * 0.69, 3, 0, Math.PI * 2);
-    ctx.fillStyle = '#E86F61';
+    ctx.fillStyle = '#3C8B6E';
     ctx.fill();
   }
   ctx.restore();
@@ -705,11 +705,11 @@ function cdLoadSvgOntoCanvas(svgStr) {
 // ── View carousel ─────────────────────────────────────────────────────────
 // Five views, each backed by a QCAD SVG template file
 var CD_VIEWS = [
-  { key: 'plan',      label: 'Plan (Top)',  file: 'assets/characters/RBB_Plan.svg'      },
-  { key: 'front',     label: 'Front',       file: 'assets/characters/RBB_Front.svg'     },
-  { key: 'rear',      label: 'Rear',        file: 'assets/characters/RBB_Front.svg'     },  // same profile as front
-  { key: 'elevation', label: 'Side',        file: 'assets/characters/RBB_Elevation.svg' },
-  { key: 'elevation2',label: 'Other Side',  file: 'assets/characters/RBB_Elevation.svg' }   // mirror of side
+  { key: 'plan',      label: 'Plan (Top)', file: 'assets/characters/RBB_Plan.svg'      },
+  { key: 'front',     label: 'Front',      file: 'assets/characters/RBB_Front.svg'     },
+  { key: 'back',      label: 'Back',       file: 'assets/characters/RBB_Front.svg'     },
+  { key: 'right',     label: 'Right Side', file: 'assets/characters/RBB_Elevation.svg' },
+  { key: 'left',      label: 'Left Side',  file: 'assets/characters/RBB_Elevation.svg' }
 ];
 var cdViewIdx = 0;  // index into CD_VIEWS
 
@@ -731,29 +731,57 @@ function cdUpdateViewCarousel() {
   var canvas = document.getElementById('cdSVGCanvas');
   if (!canvas) return;
 
-  // Load the SVG template as background image via fetch
-  // We use an <image> element inside the SVG canvas to show the template
-  var templateImg = document.getElementById('cdViewTemplate');
-  if (!templateImg) {
-    templateImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-    templateImg.setAttribute('id', 'cdViewTemplate');
-    templateImg.setAttribute('x', '0');
-    templateImg.setAttribute('y', '0');
-    templateImg.setAttribute('width', '200');
-    templateImg.setAttribute('height', '200');
-    templateImg.setAttribute('opacity', '0.35');
-    templateImg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    canvas.insertBefore(templateImg, canvas.firstChild);
+  // Ensure template group exists behind all drawing content
+  var tg = document.getElementById('cdTemplateGroup');
+  if (!tg) {
+    tg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    tg.setAttribute('id', 'cdTemplateGroup');
+    tg.setAttribute('opacity', '0.4');
+    canvas.insertBefore(tg, canvas.firstChild);
   }
 
-  // Mirror elevation for "Other Side" view
-  if (v.key === 'elevation2') {
-    templateImg.setAttribute('transform', 'translate(200,0) scale(-1,1)');
-  } else {
-    templateImg.removeAttribute('transform');
-  }
+  // Fetch SVG text and inject as inline content
+  fetch(v.file)
+    .then(function(r) { return r.text(); })
+    .then(function(svgText) {
+      // Extract inner content from the fetched SVG
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(svgText, 'image/svg+xml');
+      var fetchedSvg = doc.querySelector('svg');
+      if (!fetchedSvg) return;
 
-  templateImg.setAttribute('href', v.file);
+      // Get viewBox from fetched SVG to set up scaling transform
+      var vb = fetchedSvg.getAttribute('viewBox') || '-110 -110 220 220';
+      var parts = vb.trim().split(/[\s,]+/).map(Number);
+      var vw = parts[2], vh = parts[3];
+      var vx = parts[0], vy = parts[1];
+
+      // Scale to fit 200x200 canvas, centred
+      var scale = Math.min(200 / vw, 200 / vh);
+      var tx = 100 - (vx + vw / 2) * scale;
+      var ty = 100 - (vy + vh / 2) * scale;
+
+      // Mirror left side view
+      var mirror = (v.key === 'left') ? ' scale(-1,1) translate(-200,0)' : '';
+      tg.setAttribute('transform', 'translate(' + tx + ',' + ty + ') scale(' + scale + ')' + mirror);
+
+      // Inject all child elements from the fetched SVG's <g>
+      tg.innerHTML = '';
+      var fetchedG = fetchedSvg.querySelector('g');
+      if (fetchedG) {
+        tg.innerHTML = fetchedG.innerHTML;
+        // Preserve the g's own transform
+        var gt = fetchedG.getAttribute('transform');
+        if (gt) {
+          var inner = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          inner.setAttribute('transform', gt);
+          inner.innerHTML = tg.innerHTML;
+          tg.innerHTML = '';
+          tg.appendChild(inner);
+        }
+      }
+    })
+    .catch(function(e) { console.warn('cdUpdateViewCarousel: could not load', v.file, e); });
 }
 
 // Legacy stub — called from old dropdown (no longer used but kept for safety)
@@ -768,10 +796,21 @@ function cdInitNavCube() { cdUpdateViewCarousel(); }
 function cdOnScaleChange(val) {
   var display = document.getElementById('cdScaleValue');
   if (display) display.textContent = val + '%';
-  // Scale the user's costume image (not the template background)
-  var img = document.getElementById('cdCostumeImage');
-  if (!img) return;
   var scale = val / 100;
-  img.setAttribute('transform',
-    'translate(100,100) scale(' + scale + ') translate(-100,-100)');
+
+  // Scale the loaded costume image if present
+  var img = document.getElementById('cdCostumeImage');
+  if (img) {
+    img.setAttribute('transform',
+      'translate(100,100) scale(' + scale + ') translate(-100,-100)');
+  }
+
+  // Also scale the template guide
+  var tg = document.getElementById('cdTemplateGroup');
+  if (tg) {
+    // Reapply template with new scale
+    var currentTransform = tg.getAttribute('transform') || '';
+    // Extract base transform (without scale component) and reapply
+    cdUpdateViewCarousel();  // reload at current view — scale is baked in next time
+  }
 }

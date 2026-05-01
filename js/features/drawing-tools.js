@@ -2,17 +2,25 @@
 // Phase 2: extracted from index_integrate_275.html
 'use strict';
 // ── Shared drawing state ──────────────────────────────────────────────────────
-var cdActiveTool    = null;        // 'select' | 'rect' | null
+var cdActiveTool    = null;        // active tool name
+var cdPolyPoints    = [];          // in-progress polygon points [[x,y],...]
+var cdPolyPreview   = null;        // preview polyline element
+var cdSprayTimer    = null;        // spray interval timer
 var cdStrokeColour  = '#000000';   // current stroke / line colour
 var cdStrokeWidth   = 2;           // 1–5
 var cdLineType      = 'solid';     // 'solid' | 'dashed' | 'dotted'
 var cdMyColours     = [];          // saved colours (session)
 
 // ── Tool selection ────────────────────────────────────────────────────────────
+var CD_ALL_TOOLS = ['select','rect','circle','line','pencil','fill','eraser','polygon','brush','spray','load'];
+
 function cdSetTool(tool) {
   cdActiveTool = (cdActiveTool === tool) ? null : tool;
-  ['select','rect'].forEach(function(t) {
-    var btn = document.getElementById('cdTool' + t.charAt(0).toUpperCase() + t.slice(1));
+  // Cancel any in-progress polygon
+  if (tool !== 'polygon') cdPolyPoints = [];
+  CD_ALL_TOOLS.forEach(function(t) {
+    var id = 'cdTool' + t.charAt(0).toUpperCase() + t.slice(1);
+    var btn = document.getElementById(id);
     if (btn) btn.classList.toggle('active', cdActiveTool === t);
   });
   cdUpdateCanvasCursor();
@@ -55,9 +63,13 @@ function cdUpdateCanvasCursor() {
   var bg = document.getElementById('cdCanvasBg');
   if (!bg) return;
   if (cdMode === 'default') { bg.style.cursor = 'not-allowed'; return; }
-  if (cdActiveTool === 'rect')   { bg.style.cursor = 'crosshair'; return; }
-  if (cdActiveTool === 'select') { bg.style.cursor = 'default'; return; }
-  bg.style.cursor = 'default';
+  var cursors = {
+    select: 'default', rect: 'crosshair', circle: 'crosshair',
+    line: 'crosshair', pencil: 'crosshair', brush: 'crosshair',
+    fill: 'cell', eraser: 'cell', polygon: 'crosshair',
+    spray: 'crosshair'
+  };
+  bg.style.cursor = cursors[cdActiveTool] || 'default';
 }
 
 // ── Stroke width ─────────────────────────────────────────────────────────────
@@ -125,87 +137,277 @@ var cdRectDraw = null;   // { startX, startY, previewEl }
   // We attach listeners once the DOM is ready, via a small init called on charDesigner open
 })();
 
+// ── Helper: insert shape before pen hole dot ─────────────────────────────────
+function cdInsertShape(svg, el) {
+  var dot = svg.querySelector('.cd-pen-hole-dot');
+  if (dot) svg.insertBefore(el, dot);
+  else svg.appendChild(el);
+  cdUpdatePreview();
+}
+
+// ── Helper: create SVG element with common stroke/fill attributes ─────────────
+function cdMakeEl(tag) {
+  var ns = 'http://www.w3.org/2000/svg';
+  var el = document.createElementNS(ns, tag);
+  el.setAttribute('class', 'cd-drawn-shape');
+  el.setAttribute('stroke', cdStrokeColour === 'none' ? 'transparent' : cdStrokeColour);
+  el.setAttribute('stroke-width', cdStrokeWidth);
+  el.setAttribute('fill', 'none');
+  var da = cdGetDashArray(cdLineType, cdStrokeWidth);
+  if (da !== 'none') el.setAttribute('stroke-dasharray', da);
+  el.setAttribute('stroke-linecap', cdGetLineCap(cdLineType));
+  return el;
+}
+
+// ── Main drawing tool init ────────────────────────────────────────────────────
 function cdDrawToolInit() {
   var canvasBg = document.getElementById('cdCanvasBg');
   if (!canvasBg || canvasBg._drawToolsBound) return;
   canvasBg._drawToolsBound = true;
 
+  var svg = document.getElementById('cdCanvas');
+  var drag = null;  // { tool, x0, y0, previewEl }
+  var pencilPath = null;
+  var pencilPoints = [];
+
+  // ── mousedown ──────────────────────────────────────────────────────────────
   canvasBg.addEventListener('mousedown', function(e) {
-    if (cdMode === 'default') return;
-    if (cdActiveTool !== 'rect') return;
+    if (cdMode === 'default' || !cdActiveTool) return;
     e.preventDefault();
     var pt = cdSvgPoint(e);
-    cdRectDraw = { x0: pt.x, y0: pt.y, previewEl: null };
-  });
 
-  document.addEventListener('mousemove', function(e) {
-    if (!cdRectDraw) return;
-    var pt = cdSvgPoint(e);
-    var x = Math.min(cdRectDraw.x0, pt.x);
-    var y = Math.min(cdRectDraw.y0, pt.y);
-    var w = Math.abs(pt.x - cdRectDraw.x0);
-    var h = Math.abs(pt.y - cdRectDraw.y0);
-
-    var svg = document.getElementById('cdCanvas');
-    if (!cdRectDraw.previewEl) {
-      var ns = 'http://www.w3.org/2000/svg';
-      cdRectDraw.previewEl = document.createElementNS(ns, 'rect');
-      cdRectDraw.previewEl.setAttribute('class', 'cd-preview-rect');
-      cdRectDraw.previewEl.setAttribute('fill', 'none');
-      cdRectDraw.previewEl.setAttribute('stroke', cdStrokeColour === 'none' ? 'transparent' : cdStrokeColour);
-      cdRectDraw.previewEl.setAttribute('stroke-width', cdStrokeWidth);
-      cdRectDraw.previewEl.setAttribute('stroke-dasharray', '4 2');  // always dashed for preview
-      cdRectDraw.previewEl.setAttribute('pointer-events', 'none');
-      // Insert before pen hole dot so dot stays on top
-      var dot = svg.querySelector('.cd-pen-hole-dot');
-      if (dot) svg.insertBefore(cdRectDraw.previewEl, dot);
-      else svg.appendChild(cdRectDraw.previewEl);
+    if (cdActiveTool === 'polygon') {
+      cdPolyPoints.push([pt.x, pt.y]);
+      cdUpdatePolyPreview(svg);
+      return;
     }
-    cdRectDraw.previewEl.setAttribute('x', x);
-    cdRectDraw.previewEl.setAttribute('y', y);
-    cdRectDraw.previewEl.setAttribute('width', w);
-    cdRectDraw.previewEl.setAttribute('height', h);
+
+    if (cdActiveTool === 'fill') {
+      cdFillAt(svg, pt);
+      return;
+    }
+
+    if (cdActiveTool === 'spray') {
+      cdSprayAt(svg, pt);
+      cdSprayTimer = setInterval(function() {
+        var lastPt = drag ? drag.pt : pt;
+        cdSprayAt(svg, lastPt);
+      }, 40);
+      drag = { tool: 'spray', pt: pt };
+      return;
+    }
+
+    if (cdActiveTool === 'pencil' || cdActiveTool === 'brush') {
+      pencilPoints = [[pt.x, pt.y]];
+      pencilPath = cdMakeEl('path');
+      pencilPath.setAttribute('d', 'M' + pt.x + ',' + pt.y);
+      if (cdActiveTool === 'brush') {
+        pencilPath.setAttribute('stroke-width', cdStrokeWidth * 3);
+        pencilPath.setAttribute('stroke-linecap', 'round');
+        pencilPath.setAttribute('stroke-linejoin', 'round');
+        pencilPath.setAttribute('opacity', '0.75');
+      }
+      cdInsertShape(svg, pencilPath);
+      return;
+    }
+
+    if (cdActiveTool === 'eraser') {
+      drag = { tool: 'eraser', x0: pt.x, y0: pt.y, pt: pt };
+      return;
+    }
+
+    // Drag tools: rect, circle, line
+    drag = { tool: cdActiveTool, x0: pt.x, y0: pt.y, previewEl: null };
   });
 
-  document.addEventListener('mouseup', function(e) {
-    if (!cdRectDraw) return;
+  // ── mousemove ─────────────────────────────────────────────────────────────
+  document.addEventListener('mousemove', function(e) {
+    if (cdMode === 'default') return;
     var pt = cdSvgPoint(e);
-    var x = Math.min(cdRectDraw.x0, pt.x);
-    var y = Math.min(cdRectDraw.y0, pt.y);
-    var w = Math.abs(pt.x - cdRectDraw.x0);
-    var h = Math.abs(pt.y - cdRectDraw.y0);
+
+    // Update spray drag point
+    if (drag && drag.tool === 'spray') { drag.pt = pt; return; }
+
+    // Pencil / brush
+    if (pencilPath && pencilPoints.length > 0) {
+      pencilPoints.push([pt.x, pt.y]);
+      var d = 'M' + pencilPoints.map(function(p) { return p[0]+','+p[1]; }).join(' L');
+      pencilPath.setAttribute('d', d);
+      return;
+    }
+
+    // Eraser
+    if (drag && drag.tool === 'eraser') {
+      cdEraseAt(svg, pt, cdStrokeWidth * 3);
+      return;
+    }
+
+    if (!drag || !drag.x0) return;
+    var x0 = drag.x0, y0 = drag.y0;
+    var ns = 'http://www.w3.org/2000/svg';
+
+    if (!drag.previewEl) {
+      var tag = drag.tool === 'line' ? 'line' :
+                drag.tool === 'circle' ? 'ellipse' : 'rect';
+      drag.previewEl = document.createElementNS(ns, tag);
+      drag.previewEl.setAttribute('fill', 'none');
+      drag.previewEl.setAttribute('stroke', cdStrokeColour === 'none' ? 'transparent' : cdStrokeColour);
+      drag.previewEl.setAttribute('stroke-width', cdStrokeWidth);
+      drag.previewEl.setAttribute('stroke-dasharray', '4 2');
+      drag.previewEl.setAttribute('pointer-events', 'none');
+      var dot = svg.querySelector('.cd-pen-hole-dot');
+      if (dot) svg.insertBefore(drag.previewEl, dot);
+      else svg.appendChild(drag.previewEl);
+    }
+
+    if (drag.tool === 'line') {
+      drag.previewEl.setAttribute('x1', x0); drag.previewEl.setAttribute('y1', y0);
+      drag.previewEl.setAttribute('x2', pt.x); drag.previewEl.setAttribute('y2', pt.y);
+    } else if (drag.tool === 'circle') {
+      var rx = Math.abs(pt.x - x0) / 2, ry = Math.abs(pt.y - y0) / 2;
+      drag.previewEl.setAttribute('cx', (x0 + pt.x) / 2);
+      drag.previewEl.setAttribute('cy', (y0 + pt.y) / 2);
+      drag.previewEl.setAttribute('rx', rx); drag.previewEl.setAttribute('ry', ry);
+    } else {  // rect
+      drag.previewEl.setAttribute('x', Math.min(x0, pt.x));
+      drag.previewEl.setAttribute('y', Math.min(y0, pt.y));
+      drag.previewEl.setAttribute('width',  Math.abs(pt.x - x0));
+      drag.previewEl.setAttribute('height', Math.abs(pt.y - y0));
+    }
+  });
+
+  // ── mouseup ───────────────────────────────────────────────────────────────
+  document.addEventListener('mouseup', function(e) {
+    if (cdMode === 'default') return;
+
+    // Spray stop
+    if (cdSprayTimer) { clearInterval(cdSprayTimer); cdSprayTimer = null; }
+    if (drag && drag.tool === 'spray') { drag = null; return; }
+
+    // Pencil / brush commit
+    if (pencilPath) {
+      if (pencilPoints.length < 2) pencilPath.parentNode && pencilPath.parentNode.removeChild(pencilPath);
+      pencilPath = null; pencilPoints = [];
+      cdUpdatePreview(); return;
+    }
+
+    // Eraser stop
+    if (drag && drag.tool === 'eraser') { drag = null; return; }
+
+    if (!drag || !drag.previewEl) { drag = null; return; }
+    var pt = cdSvgPoint(e);
+    var x0 = drag.x0, y0 = drag.y0;
 
     // Remove preview
-    if (cdRectDraw.previewEl && cdRectDraw.previewEl.parentNode) {
-      cdRectDraw.previewEl.parentNode.removeChild(cdRectDraw.previewEl);
+    if (drag.previewEl.parentNode) drag.previewEl.parentNode.removeChild(drag.previewEl);
+
+    var el = cdMakeEl(drag.tool === 'line' ? 'line' : drag.tool === 'circle' ? 'ellipse' : 'rect');
+
+    if (drag.tool === 'line') {
+      el.setAttribute('x1', x0); el.setAttribute('y1', y0);
+      el.setAttribute('x2', pt.x); el.setAttribute('y2', pt.y);
+    } else if (drag.tool === 'circle') {
+      var rx = Math.abs(pt.x - x0) / 2, ry = Math.abs(pt.y - y0) / 2;
+      if (rx < 1 && ry < 1) { drag = null; return; }
+      el.setAttribute('cx', (x0 + pt.x) / 2); el.setAttribute('cy', (y0 + pt.y) / 2);
+      el.setAttribute('rx', rx); el.setAttribute('ry', ry);
+    } else {
+      var w = Math.abs(pt.x - x0), h = Math.abs(pt.y - y0);
+      if (w < 2 && h < 2) { drag = null; return; }
+      el.setAttribute('x', Math.min(x0, pt.x)); el.setAttribute('y', Math.min(y0, pt.y));
+      el.setAttribute('width', w); el.setAttribute('height', h);
     }
-    cdRectDraw = null;
 
-    // Only commit if meaningful size
-    if (w < 2 && h < 2) return;
-
-    var ns  = 'http://www.w3.org/2000/svg';
-    var svg = document.getElementById('cdCanvas');
-    var rect = document.createElementNS(ns, 'rect');
-    rect.setAttribute('x', x);
-    rect.setAttribute('y', y);
-    rect.setAttribute('width', w);
-    rect.setAttribute('height', h);
-    rect.setAttribute('fill', 'none');
-    rect.setAttribute('stroke', cdStrokeColour === 'none' ? 'transparent' : cdStrokeColour);
-    rect.setAttribute('stroke-width', cdStrokeWidth);
-    var da = cdGetDashArray(cdLineType, cdStrokeWidth);
-    if (da !== 'none') rect.setAttribute('stroke-dasharray', da);
-    rect.setAttribute('stroke-linecap', cdGetLineCap(cdLineType));
-    rect.setAttribute('class', 'cd-drawn-shape');
-
-    // Insert before pen hole dot
-    var dot = svg.querySelector('.cd-pen-hole-dot');
-    if (dot) svg.insertBefore(rect, dot);
-    else svg.appendChild(rect);
-
-    cdUpdatePreview();
+    cdInsertShape(svg, el);
+    drag = null;
   });
+
+  // ── dblclick: close polygon ───────────────────────────────────────────────
+  canvasBg.addEventListener('dblclick', function(e) {
+    if (cdActiveTool !== 'polygon' || cdPolyPoints.length < 3) return;
+    e.preventDefault();
+    // Remove preview
+    if (cdPolyPreview && cdPolyPreview.parentNode) cdPolyPreview.parentNode.removeChild(cdPolyPreview);
+    cdPolyPreview = null;
+    // Commit polygon
+    var el = cdMakeEl('polygon');
+    el.setAttribute('points', cdPolyPoints.map(function(p){return p[0]+','+p[1];}).join(' '));
+    cdInsertShape(svg, el);
+    cdPolyPoints = [];
+  });
+}
+
+// ── Polygon preview ───────────────────────────────────────────────────────────
+function cdUpdatePolyPreview(svg) {
+  if (!cdPolyPreview) {
+    var ns = 'http://www.w3.org/2000/svg';
+    cdPolyPreview = document.createElementNS(ns, 'polyline');
+    cdPolyPreview.setAttribute('fill', 'none');
+    cdPolyPreview.setAttribute('stroke', cdStrokeColour === 'none' ? '#888' : cdStrokeColour);
+    cdPolyPreview.setAttribute('stroke-width', cdStrokeWidth);
+    cdPolyPreview.setAttribute('stroke-dasharray', '4 2');
+    cdPolyPreview.setAttribute('pointer-events', 'none');
+    var dot = svg.querySelector('.cd-pen-hole-dot');
+    if (dot) svg.insertBefore(cdPolyPreview, dot);
+    else svg.appendChild(cdPolyPreview);
+  }
+  cdPolyPreview.setAttribute('points', cdPolyPoints.map(function(p){return p[0]+','+p[1];}).join(' '));
+}
+
+// ── Fill tool (flood fill on SVG — fills clicked shape or adds bg rect) ───────
+function cdFillAt(svg, pt) {
+  // In SVG, find topmost element at click point and fill it
+  var els = svg.elementsFromPoint ? null : null;
+  var target = document.elementFromPoint(
+    pt.x * svg.getScreenCTM().a + svg.getScreenCTM().e,
+    pt.y * svg.getScreenCTM().d + svg.getScreenCTM().f
+  );
+  if (target && target !== svg && target.classList.contains('cd-drawn-shape')) {
+    target.setAttribute('fill', cdStrokeColour);
+  } else {
+    // Add a background colour rect
+    var ns = 'http://www.w3.org/2000/svg';
+    var bg = document.createElementNS(ns, 'rect');
+    bg.setAttribute('x', '0'); bg.setAttribute('y', '0');
+    bg.setAttribute('width', '200'); bg.setAttribute('height', '200');
+    bg.setAttribute('fill', cdStrokeColour);
+    bg.setAttribute('class', 'cd-drawn-shape');
+    bg.setAttribute('pointer-events', 'none');
+    svg.insertBefore(bg, svg.firstChild.nextSibling); // after template group
+  }
+  cdUpdatePreview();
+}
+
+// ── Eraser ────────────────────────────────────────────────────────────────────
+function cdEraseAt(svg, pt, r) {
+  // Erase by converting point to screen coords and checking elements
+  var screenX = pt.x * svg.getScreenCTM().a + svg.getScreenCTM().e;
+  var screenY = pt.y * svg.getScreenCTM().d + svg.getScreenCTM().f;
+  var target = document.elementFromPoint(screenX, screenY);
+  if (target && target.classList && target.classList.contains('cd-drawn-shape')) {
+    target.parentNode.removeChild(target);
+    cdUpdatePreview();
+  }
+}
+
+// ── Spray ─────────────────────────────────────────────────────────────────────
+function cdSprayAt(svg, pt) {
+  var ns = 'http://www.w3.org/2000/svg';
+  var radius = cdStrokeWidth * 8;
+  var density = 6;
+  for (var i = 0; i < density; i++) {
+    var angle = Math.random() * Math.PI * 2;
+    var dist  = Math.random() * radius;
+    var cx = pt.x + Math.cos(angle) * dist;
+    var cy = pt.y + Math.sin(angle) * dist;
+    var dot = document.createElementNS(ns, 'circle');
+    dot.setAttribute('cx', cx); dot.setAttribute('cy', cy);
+    dot.setAttribute('r', Math.max(0.5, cdStrokeWidth * 0.4));
+    dot.setAttribute('fill', cdStrokeColour);
+    dot.setAttribute('class', 'cd-drawn-shape');
+    dot.setAttribute('pointer-events', 'none');
+    cdInsertShape(svg, dot);
+  }
 }
 
 // Convert mouse event to SVG coordinate space
