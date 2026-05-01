@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RBB Elevation (Side) View — coloured template for Character Designer -->
+<svg width="220mm" height="100mm" viewBox="-110 -50 220 100" version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     style="stroke-linecap:round;stroke-linejoin:round;">
+
+  <!-- Elevation profile: front of robot faces RIGHT -->
+  <!-- QCAD Y normalised: body bottom=0, body top=65 -> centred: -32.5 to +32.5 -->
+  <g transform="translate(0,0) scale(1,1)">
+
+    <!-- Body silhouette — filled cream -->
+    <!-- Outer shell: top flat section ~126mm wide, curved sides tapering to 200mm base -->
+    <!-- Based on QCAD: base y=175 (bottom), dome top y=240, width at base=200, top=126 -->
+    <!-- Normalised: base at y=+32, top dome at y=-32, half-widths: base=100, top=63 -->
+
+    <!-- Main body fill path (approximating the QCAD spline profile) -->
+    <path d="M -100,32 
+             C -100,32 -74.9,32.6 -60,29
+             L -63,-29
+             C -74.9,-29.6 -100,-32 -100,-32
+             A 15,15 0 0,1 -85,-17
+             L 85,-17
+             A 15,15 0 0,1 100,-32
+             L 100,17
+             A 15,15 0 0,0 85,32
+             L -85,32
+             A 15,15 0 0,0 -100,17 Z"
+          style="fill:#E8DEB8;stroke:#B8A878;stroke-width:1.0;"/>
+
+    <!-- Spigot indicator line at top (visible from side) -->
+    <line x1="-20" y1="17" x2="-20" y2="32"
+          style="stroke:#B8A878;stroke-width:0.75;"/>
+
+    <!-- Forward direction indicator — arrow pointing right (front) -->
+    <polygon points="80,0 65,-6 65,6"
+             style="fill:#3C8B6E;stroke:none;"/>
+
+  </g>
+</svg>

@@ -702,53 +702,76 @@ function cdLoadSvgOntoCanvas(svgStr) {
 
 
 
-var cdView = 'top'; // 'end1' | 'end2' | 'side' | 'top'
+// ── View carousel ─────────────────────────────────────────────────────────
+// Five views, each backed by a QCAD SVG template file
+var CD_VIEWS = [
+  { key: 'plan',      label: 'Plan (Top)',  file: 'assets/characters/RBB_Plan.svg'      },
+  { key: 'front',     label: 'Front',       file: 'assets/characters/RBB_Front.svg'     },
+  { key: 'rear',      label: 'Rear',        file: 'assets/characters/RBB_Front.svg'     },  // same profile as front
+  { key: 'elevation', label: 'Side',        file: 'assets/characters/RBB_Elevation.svg' },
+  { key: 'elevation2',label: 'Other Side',  file: 'assets/characters/RBB_Elevation.svg' }   // mirror of side
+];
+var cdViewIdx = 0;  // index into CD_VIEWS
 
-// Colour palette — lighter, more distinguishable face colours
-var CD_CUBE_COLOURS = {
-  top:   { normal: '#a8d4f0', active: '#00A0E3' },  // light blue — fixes dark top
-  right: { normal: '#7ab0d4', active: '#0080be' },
-  left:  { normal: '#5890b8', active: '#005f8a' },
-  front: { normal: '#8ec8e8', active: '#00A0E3' },
-  back:  { normal: '#6aaad0', active: '#0080be' }
-};
-
-// Label colours — dark on light faces, white on active
-var CD_CUBE_LABEL = {
-  normal: '#1a2a4a',
-  active: '#ffffff'
-};
-
-var CD_VIEW_TEMPLATES = {
-  end1: '<svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect x="18" y="22" width="224" height="136" rx="10" fill="none" stroke="#aac4ff" stroke-width="1.8" opacity=".55"/><rect x="98" y="6" width="64" height="18" rx="5" fill="none" stroke="#aac4ff" stroke-width="1.8" opacity=".55"/><ellipse cx="130" cy="90" rx="40" ry="29" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".55"/><g fill="#aac4ff" opacity=".4"><circle cx="108" cy="78" r="2.2"/><circle cx="118" cy="78" r="2.2"/><circle cx="128" cy="78" r="2.2"/><circle cx="138" cy="78" r="2.2"/><circle cx="148" cy="78" r="2.2"/><circle cx="104" cy="88" r="2.2"/><circle cx="114" cy="88" r="2.2"/><circle cx="124" cy="88" r="2.2"/><circle cx="134" cy="88" r="2.2"/><circle cx="144" cy="88" r="2.2"/><circle cx="154" cy="88" r="2.2"/><circle cx="108" cy="98" r="2.2"/><circle cx="118" cy="98" r="2.2"/><circle cx="128" cy="98" r="2.2"/><circle cx="138" cy="98" r="2.2"/><circle cx="148" cy="98" r="2.2"/></g><rect x="20" y="158" width="28" height="20" rx="4" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="212" y="158" width="28" height="20" rx="4" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="112" y="158" width="36" height="20" rx="8" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/></svg>',
-  end2: '<svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect x="18" y="22" width="224" height="136" rx="10" fill="none" stroke="#aac4ff" stroke-width="1.8" opacity=".55"/><rect x="98" y="6" width="64" height="18" rx="5" fill="none" stroke="#aac4ff" stroke-width="1.8" opacity=".55"/><rect x="88" y="40" width="84" height="44" rx="5" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="36" y="60" width="28" height="20" rx="3" fill="none" stroke="#aac4ff" stroke-width="1.3" opacity=".45"/><rect x="196" y="60" width="28" height="20" rx="3" fill="none" stroke="#aac4ff" stroke-width="1.3" opacity=".45"/><rect x="20" y="158" width="28" height="20" rx="4" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="212" y="158" width="28" height="20" rx="4" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="112" y="158" width="36" height="20" rx="8" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/></svg>',
-  side: '<svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect x="18" y="28" width="324" height="128" rx="10" fill="none" stroke="#aac4ff" stroke-width="1.8" opacity=".55"/><rect x="148" y="8" width="64" height="22" rx="5" fill="none" stroke="#aac4ff" stroke-width="1.8" opacity=".55"/><circle cx="180" cy="167" r="14" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="20" y="156" width="28" height="28" rx="4" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="312" y="156" width="28" height="28" rx="4" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/></svg>',
-  top:  '<svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect x="28" y="22" width="304" height="192" rx="14" fill="none" stroke="#aac4ff" stroke-width="1.8" opacity=".55"/><rect x="8" y="72" width="22" height="74" rx="10" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="330" y="72" width="22" height="74" rx="10" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><rect x="148" y="8" width="64" height="16" rx="6" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><circle cx="180" cy="118" r="16" fill="none" stroke="#aac4ff" stroke-width="1.5" opacity=".5"/><line x1="180" y1="148" x2="180" y2="168" stroke="#aac4ff" stroke-width="1.4" opacity=".4"/><polyline points="173,162 180,170 187,162" fill="none" stroke="#aac4ff" stroke-width="1.4" opacity=".4"/></svg>'
-};
-
-function cdSetView(view) {
-  cdView = view;
-  var dd = document.getElementById('cdViewDropdown');
-  if (dd) dd.value = view;
-  cdUpdateViewSelector();
+function cdViewNext() {
+  cdViewIdx = (cdViewIdx + 1) % CD_VIEWS.length;
+  cdUpdateViewCarousel();
 }
 
-function cdCycleView() {
-  var order = ['end1','end2','side','top'];
-  var idx = order.indexOf(cdView);
-  cdSetView(order[(idx + 1) % order.length]);
+function cdViewPrev() {
+  cdViewIdx = (cdViewIdx - 1 + CD_VIEWS.length) % CD_VIEWS.length;
+  cdUpdateViewCarousel();
 }
 
-function cdUpdateViewSelector() {
-  var display = document.getElementById('cdViewDisplay');
-  if (!display) return;
-  display.innerHTML = CD_VIEW_TEMPLATES[cdView] || CD_VIEW_TEMPLATES['top'];
+function cdUpdateViewCarousel() {
+  var v = CD_VIEWS[cdViewIdx];
+  var label = document.getElementById('cdViewLabel');
+  if (label) label.textContent = v.label;
+
+  var canvas = document.getElementById('cdSVGCanvas');
+  if (!canvas) return;
+
+  // Load the SVG template as background image via fetch
+  // We use an <image> element inside the SVG canvas to show the template
+  var templateImg = document.getElementById('cdViewTemplate');
+  if (!templateImg) {
+    templateImg = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    templateImg.setAttribute('id', 'cdViewTemplate');
+    templateImg.setAttribute('x', '0');
+    templateImg.setAttribute('y', '0');
+    templateImg.setAttribute('width', '200');
+    templateImg.setAttribute('height', '200');
+    templateImg.setAttribute('opacity', '0.35');
+    templateImg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    canvas.insertBefore(templateImg, canvas.firstChild);
+  }
+
+  // Mirror elevation for "Other Side" view
+  if (v.key === 'elevation2') {
+    templateImg.setAttribute('transform', 'translate(200,0) scale(-1,1)');
+  } else {
+    templateImg.removeAttribute('transform');
+  }
+
+  templateImg.setAttribute('href', v.file);
 }
 
-// Initialise view selector on first open
-function cdInitNavCube() {
-  cdUpdateViewSelector();
-}
+// Legacy stub — called from old dropdown (no longer used but kept for safety)
+function cdSetView(view) { }
+function cdCycleView() { cdViewNext(); }
+function cdInitNavCube() { cdUpdateViewCarousel(); }
 
 // ── Character Designer — Step 3: Drawing Tools ───────────────────────────────
 
+
+// ── Scale slider ───────────────────────────────────────────────────────────
+function cdOnScaleChange(val) {
+  var display = document.getElementById('cdScaleValue');
+  if (display) display.textContent = val + '%';
+  // Scale the user's costume image (not the template background)
+  var img = document.getElementById('cdCostumeImage');
+  if (!img) return;
+  var scale = val / 100;
+  img.setAttribute('transform',
+    'translate(100,100) scale(' + scale + ') translate(-100,-100)');
+}

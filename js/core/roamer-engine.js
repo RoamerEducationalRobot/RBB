@@ -395,6 +395,10 @@ async function rwGO() {
   var rsl = rwGetRSL();
   rw.cmdQueue = rwCompile(rsl);
   if (rw.cmdQueue.length === 0) { rwSetCmd('No program connected to GO block'); return; }
+  // Switch to Roamer Graphics tab before running
+  var rwTabBtn = document.getElementById('rwTabBtn');
+  if (rwTabBtn) showTab('rw', rwTabBtn);
+  rwFitCanvas();
   ccClick(880, 0.05);
   document.getElementById('ccGOBtn').classList.add('rw-active');
   rw.stopFlag = false; rw.paused = false; rw.stepMode = false;

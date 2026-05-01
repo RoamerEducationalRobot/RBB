@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RBB Front View — coloured template for Character Designer -->
+<svg width="182mm" height="90mm" viewBox="-91 -45 182 90" version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     style="stroke-linecap:round;stroke-linejoin:round;">
+
+  <!-- Front view: looking at Roamer head-on -->
+  <g>
+
+    <!-- Body silhouette — filled cream -->
+    <!-- Based on Front.svg QCAD profile: width=162, height=70 -->
+    <!-- Corners have r=15 arcs; bottom flat; sides curve inward slightly at top -->
+    <path d="M -81,-20
+             A 15,15 0 0,1 -66,-35
+             L  66,-35
+             A 15,15 0 0,1  81,-20
+             C  81,-20  81,25  81,25
+             L  63,35
+             L -63,35
+             L -81,25
+             C -81,25 -81,-20 -81,-20 Z"
+          style="fill:#E8DEB8;stroke:#B8A878;stroke-width:1.0;"/>
+
+    <!-- Keypad base indicator (green lines at bottom centre, visible from front) -->
+    <line x1="-37" y1="35" x2="-37" y2="22"
+          style="stroke:#3C8B6E;stroke-width:1.5;"/>
+    <line x1=" 37" y1="35" x2=" 37" y2="22"
+          style="stroke:#3C8B6E;stroke-width:1.5;"/>
+    <line x1="-37" y1="22" x2=" 37" y2="22"
+          style="stroke:#3C8B6E;stroke-width:1.5;"/>
+
+    <!-- Pen hole / centre marker -->
+    <circle cx="0" cy="-5" r="5"
+            style="fill:#E8DEB8;stroke:#3C8B6E;stroke-width:1.5;"/>
+
+  </g>
+</svg>

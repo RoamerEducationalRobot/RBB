@@ -310,8 +310,8 @@ function rwDrawRoamer() {
     // Body ellipse
     rwCtx.beginPath();
     rwCtx.ellipse(0, 0, ry, r, 0, 0, Math.PI * 2);
-    rwCtx.fillStyle   = '#CFE8F3';
-    rwCtx.strokeStyle = '#7ab8d4';
+    rwCtx.fillStyle   = '#E8DEB8';  // R3 cream
+    rwCtx.strokeStyle = '#B8A878';  // darker cream edge
     rwCtx.lineWidth   = 1.5;
     rwCtx.fill();
     rwCtx.stroke();
@@ -320,8 +320,8 @@ function rwDrawRoamer() {
     var spigotR = r * 0.6;
     rwCtx.beginPath();
     rwCtx.arc(0, 0, spigotR, 0, Math.PI * 2);
-    rwCtx.fillStyle   = '#bdd8e8';
-    rwCtx.strokeStyle = '#7ab8d4';
+    rwCtx.fillStyle   = '#D8CEA8';  // slightly darker cream for spigot
+    rwCtx.strokeStyle = '#B8A878';  // darker cream edge
     rwCtx.lineWidth   = 1;
     rwCtx.fill();
     rwCtx.stroke();
@@ -333,8 +333,8 @@ function rwDrawRoamer() {
     var kr = 1;  // essentially square corners
     rwCtx.beginPath();
     rwCtx.roundRect(-kw, -kh, kw * 2, kh * 2, kr);
-    rwCtx.fillStyle   = '#a8c8dc';
-    rwCtx.strokeStyle = '#7ab8d4';
+    rwCtx.fillStyle   = '#C8B888';  // keypad
+    rwCtx.strokeStyle = '#B8A878';  // darker cream edge
     rwCtx.lineWidth   = 1;
     rwCtx.fill();
     rwCtx.stroke();
@@ -353,7 +353,7 @@ function rwDrawRoamer() {
   rwCtx.lineTo(-tSize * 0.7, tSize * 0.5); // base left
   rwCtx.lineTo( tSize * 0.7, tSize * 0.5); // base right
   rwCtx.closePath();
-  rwCtx.fillStyle = '#E86F61';
+  rwCtx.fillStyle = '#3C8B6E';  // green direction triangle
   rwCtx.fill();
   rwCtx.restore();
 }
