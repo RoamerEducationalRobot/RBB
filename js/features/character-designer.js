@@ -741,7 +741,8 @@ function cdUpdateViewCarousel() {
   }
 
   // Fetch SVG text and inject as inline content
-  fetch(v.file)
+  var basePath = window.location.href.replace(/\/[^\/]*$/, '/');
+  fetch(basePath + v.file)
     .then(function(r) { return r.text(); })
     .then(function(svgText) {
       // Extract inner content from the fetched SVG
