@@ -90,9 +90,9 @@ function cdShowDefaultOnCanvas() {
     fill:'#D8CEA8', stroke:'#B8A878', 'stroke-width':1 });
 
   // Keypad bezel — green, square
-  el('rect', { x:cx-38, y:cy-10, width:76, height:76, fill:'#3C8B6E' });
+  el('rect', { x:cx-38, y:cy-38, width:76, height:76, fill:'#3C8B6E' });
   // Keypad white interior — square
-  el('rect', { x:cx-30, y:cy-2, width:60, height:60, fill:'#ffffff' });
+  el('rect', { x:cx-30, y:cy-30, width:60, height:60, fill:'#ffffff' });
 
   // Left eye — VERTICAL oval (taller than wide)
   el('ellipse', { cx:cx-31, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });

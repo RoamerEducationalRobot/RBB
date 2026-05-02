@@ -335,7 +335,7 @@ function rwDrawRoamer() {
     rwCtx.rect(-ks, kcy - ks, ks * 2, ks * 2);
     rwCtx.fillStyle = '#3C8B6E'; rwCtx.fill();
     rwCtx.beginPath();
-    rwCtx.rect(-ksi, kcy - ksi, ksi * 2, ksi * 2);
+    rwCtx.rect(-ksi, -ksi, ksi * 2, ksi * 2);
     rwCtx.fillStyle = '#ffffff'; rwCtx.fill();
   }
 
