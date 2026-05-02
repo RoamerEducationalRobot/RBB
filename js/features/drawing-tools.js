@@ -354,28 +354,15 @@ function cdUpdatePolyPreview(svg) {
   cdPolyPreview.setAttribute('points', cdPolyPoints.map(function(p){return p[0]+','+p[1];}).join(' '));
 }
 
-// ── Fill tool (flood fill on SVG — fills clicked shape or adds bg rect) ───────
+// ── Fill tool — fills a clicked drawn shape only, never floods background ──────
 function cdFillAt(svg, pt) {
-  // In SVG, find topmost element at click point and fill it
-  var els = svg.elementsFromPoint ? null : null;
-  var target = document.elementFromPoint(
-    pt.x * svg.getScreenCTM().a + svg.getScreenCTM().e,
-    pt.y * svg.getScreenCTM().d + svg.getScreenCTM().f
-  );
-  if (target && target !== svg && target.classList.contains('cd-drawn-shape')) {
+  var screenX = pt.x * svg.getScreenCTM().a + svg.getScreenCTM().e;
+  var screenY = pt.y * svg.getScreenCTM().d + svg.getScreenCTM().f;
+  var target = document.elementFromPoint(screenX, screenY);
+  if (target && target.classList && target.classList.contains('cd-drawn-shape')) {
     target.setAttribute('fill', cdStrokeColour);
-  } else {
-    // Add a background colour rect
-    var ns = 'http://www.w3.org/2000/svg';
-    var bg = document.createElementNS(ns, 'rect');
-    bg.setAttribute('x', '0'); bg.setAttribute('y', '0');
-    bg.setAttribute('width', '200'); bg.setAttribute('height', '200');
-    bg.setAttribute('fill', cdStrokeColour);
-    bg.setAttribute('class', 'cd-drawn-shape');
-    bg.setAttribute('pointer-events', 'none');
-    svg.insertBefore(bg, svg.firstChild.nextSibling); // after template group
+    cdUpdatePreview();
   }
-  cdUpdatePreview();
 }
 
 // ── Eraser ────────────────────────────────────────────────────────────────────

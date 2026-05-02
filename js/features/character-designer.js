@@ -42,7 +42,13 @@ function openCharDesignerFromNav(btn) {
   if (cdMode === 'default') { setTimeout(cdShowDefaultOnCanvas, 0); }
   cdUpdatePreview();
   cdShowRoamerTab('library');
-  setTimeout(cdInitNavCube, 100);  // small delay ensures overlay is visible before template inject
+  setTimeout(cdInitNavCube, 100);
+  // Sync carousel/scale visibility with current mode
+  var _c = document.getElementById('cdViewCarousel');
+  var _s = document.getElementById('cdScaleWrap');
+  var _ch = (cdMode === 'character');
+  if (_c) _c.style.display = _ch ? 'flex' : 'none';
+  if (_s) _s.style.display = _ch ? 'flex' : 'none';
 }
 
 function closeCharDesigner() {

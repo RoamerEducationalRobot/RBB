@@ -1261,15 +1261,15 @@
       <div id="cdGizmoPreviewRow">
 
         <!-- View carousel -->
-        <div id="cdViewCarousel">
+        <div id="cdViewCarousel" style="display:none;">
           <button class="cd-view-arrow" onclick="cdViewPrev()" title="Previous view">&#9664;</button>
           <div id="cdViewLabel">Plan (Top)</div>
           <button class="cd-view-arrow" onclick="cdViewNext()" title="Next view">&#9654;</button>
         </div>
         <!-- Scale slider -->
-        <div id="cdScaleWrap">
+        <div id="cdScaleWrap" style="display:none;">
           <label class="cd-scale-label">Scale</label>
-          <input id="cdScaleSlider" type="range" min="25" max="200" value="100"
+          <input id="cdScaleSlider" type="range" min="50" max="150" value="100"
                  oninput="cdOnScaleChange(this.value)">
           <span id="cdScaleValue">100%</span>
         </div>
