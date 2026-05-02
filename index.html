@@ -1257,22 +1257,8 @@
 
       </div><!-- end cdCanvasCol -->
 
-      <!-- Right column: gizmo, preview, controls, buttons -->
+      <!-- Right column: preview, controls, carousel, buttons -->
       <div id="cdGizmoPreviewRow">
-
-        <!-- View carousel -->
-        <div id="cdViewCarousel" style="display:none;">
-          <button class="cd-view-arrow" onclick="cdViewPrev()" title="Previous view">&#9664;</button>
-          <div id="cdViewLabel">Plan (Top)</div>
-          <button class="cd-view-arrow" onclick="cdViewNext()" title="Next view">&#9654;</button>
-        </div>
-        <!-- Scale slider -->
-        <div id="cdScaleWrap" style="display:none;">
-          <label class="cd-scale-label">Scale</label>
-          <input id="cdScaleSlider" type="range" min="50" max="150" value="100"
-                 oninput="cdOnScaleChange(this.value)">
-          <span id="cdScaleValue">100%</span>
-        </div>
 
         <!-- Preview + controls -->
         <div id="cdPreviewWrap">
@@ -1287,6 +1273,20 @@
           <div id="cdToggleWrap">
             <button class="cd-toggle-btn active" id="cdBtnDefault" onclick="cdSetMode('default')">Default</button>
             <button class="cd-toggle-btn" id="cdBtnCharacter" onclick="cdSetMode('character')">Character</button>
+          </div>
+
+          <!-- View carousel — shown only in Character mode -->
+          <div id="cdViewCarousel" style="display:none;">
+            <button class="cd-view-arrow" onclick="cdViewPrev()" title="Previous view">&#9664;</button>
+            <div id="cdViewLabel">Plan (Top)</div>
+            <button class="cd-view-arrow" onclick="cdViewNext()" title="Next view">&#9654;</button>
+          </div>
+          <!-- Scale slider — shown only in Character mode -->
+          <div id="cdScaleWrap" style="display:none;">
+            <label class="cd-scale-label">Scale</label>
+            <input id="cdScaleSlider" type="range" min="50" max="150" value="100"
+                   oninput="cdOnScaleChange(this.value)">
+            <span id="cdScaleValue">100%</span>
           </div>
 
           <!-- Apply / Cancel -->

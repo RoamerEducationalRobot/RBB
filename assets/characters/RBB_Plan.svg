@@ -1,32 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- RBB Plan View — coloured template for Character Designer -->
+<!-- RBB Plan View — default R3 Roamer character template -->
+<!-- ViewBox: -110,-110 to 110,110. Centre (0,0) = pen hole. Front = top (Y-) -->
 <svg width="220mm" height="220mm" viewBox="-110 -110 220 220" version="1.1"
      xmlns="http://www.w3.org/2000/svg"
      style="stroke-linecap:round;stroke-linejoin:round;">
 
-  <!-- coordinate system: 0,0 = pen hole centre; Y+ = front (up on screen) -->
-  <!-- scale(1,-1) flips QCAD Y-up to SVG Y-down -->
-  <g transform="scale(1,-1)">
+  <!-- Body ellipse — cream, portrait -->
+  <ellipse cx="0" cy="0" rx="81" ry="100"
+           style="fill:#E8DEB8;stroke:#B8A878;stroke-width:2;"/>
 
-    <!-- Body ellipse — cream fill -->
-    <ellipse cx="0" cy="0" rx="100" ry="81"
-             style="fill:#E8DEB8;stroke:#B8A878;stroke-width:1.0;"/>
+  <!-- Spigot ring — slightly darker cream -->
+  <circle cx="0" cy="0" r="60"
+          style="fill:#D8CEA8;stroke:#B8A878;stroke-width:1;"/>
 
-    <!-- Spigot area circle r=60 — slightly darker cream -->
-    <circle cx="0" cy="0" r="60"
-            style="fill:#D8CEA8;stroke:#B8A878;stroke-width:0.75;"/>
+  <!-- Keypad bezel — thick green border (outer rect) -->
+  <rect x="-47" y="-40" width="94" height="80"
+        style="fill:#3C8B6E;stroke:none;"/>
 
-    <!-- Keypad rounded rect 74x74 centred — blue-grey fill, green outline -->
-    <rect x="-37" y="-37" width="74" height="74" rx="3" ry="3"
-          style="fill:#8899BB;stroke:#3C8B6E;stroke-width:1.5;"/>
+  <!-- Keypad graphic area — white fill inside bezel -->
+  <rect x="-38" y="-33" width="76" height="65"
+        style="fill:#ffffff;stroke:none;"/>
 
-    <!-- Pen hole circle r=10 — green outline, cream fill -->
-    <circle cx="0" cy="0" r="10"
-            style="fill:#E8DEB8;stroke:#3C8B6E;stroke-width:1.5;"/>
+  <!-- Left eye — oval, black border, amber fill, dark pupil, white highlight -->
+  <!-- Outer black border (oval) -->
+  <ellipse cx="-31" cy="-81" rx="11" ry="8"
+           style="fill:#1a1a1a;stroke:none;"/>
+  <!-- Amber/golden eye fill -->
+  <ellipse cx="-31" cy="-81" rx="9" ry="6.5"
+           style="fill:#E8B84B;stroke:none;"/>
+  <!-- Dark pupil -->
+  <circle cx="-31" cy="-81" r="4"
+          style="fill:#1a1a1a;stroke:none;"/>
+  <!-- White specular highlight -->
+  <circle cx="-27" cy="-84" r="1.8"
+          style="fill:#ffffff;stroke:none;"/>
 
-    <!-- Forward direction indicator — small green triangle pointing up (front) -->
-    <polygon points="0,25 -5,15 5,15"
-             style="fill:#3C8B6E;stroke:none;"/>
+  <!-- Right eye — oval, black border, amber fill, dark pupil, white highlight -->
+  <ellipse cx="31" cy="-81" rx="11" ry="8"
+           style="fill:#1a1a1a;stroke:none;"/>
+  <ellipse cx="31" cy="-81" rx="9" ry="6.5"
+           style="fill:#E8B84B;stroke:none;"/>
+  <circle cx="31" cy="-81" r="4"
+          style="fill:#1a1a1a;stroke:none;"/>
+  <circle cx="35" cy="-84" r="1.8"
+          style="fill:#ffffff;stroke:none;"/>
 
-  </g>
 </svg>

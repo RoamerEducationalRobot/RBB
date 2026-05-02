@@ -69,42 +69,43 @@ function cdShowDefaultOnCanvas() {
   var bg  = document.getElementById('cdCanvasBg');
   if (!svg) return;
   while (svg.firstChild) { svg.removeChild(svg.firstChild); }
-  // Canvas is 200x200 SVG units. Pen hole at (100,100) = centre.
-  // Body ellipse: rx=100 (major, vertical), ry=81 (minor, horizontal)
-  // Spigot: r=60, centred
-  // Keypad: 74x74 rounded rect centred on (100,100), corner r=20
+  // Canvas is 200x200 SVG units. Centre (100,100) = pen hole. Front = top.
   var ns = 'http://www.w3.org/2000/svg';
   var cx = 100, cy = 100;
 
-  // Body ellipse
-  var body = document.createElementNS(ns, 'ellipse');
-  body.setAttribute('cx', cx); body.setAttribute('cy', cy);
-  body.setAttribute('rx', '81'); body.setAttribute('ry', '100');
-  body.setAttribute('fill', '#E8DEB8'); body.setAttribute('stroke', '#B8A878');
-  body.setAttribute('stroke-width', '2'); body.setAttribute('pointer-events', 'none');
-  svg.appendChild(body);
+  function el(tag, attrs) {
+    var e = document.createElementNS(ns, tag);
+    Object.keys(attrs).forEach(function(k) { e.setAttribute(k, attrs[k]); });
+    e.setAttribute('pointer-events', 'none');
+    svg.appendChild(e);
+    return e;
+  }
 
-  // Spigot circle
-  var spigot = document.createElementNS(ns, 'circle');
-  spigot.setAttribute('cx', cx); spigot.setAttribute('cy', cy); spigot.setAttribute('r', '60');
-  spigot.setAttribute('fill', '#D8CEA8'); spigot.setAttribute('stroke', '#B8A878');
-  spigot.setAttribute('stroke-width', '1.5'); spigot.setAttribute('pointer-events', 'none');
-  svg.appendChild(spigot);
+  // Body ellipse — cream, portrait
+  el('ellipse', { cx:cx, cy:cy, rx:81, ry:100,
+    fill:'#E8DEB8', stroke:'#B8A878', 'stroke-width':2 });
 
-  // Keypad recess (74x74, corner r=2)
-  var keypad = document.createElementNS(ns, 'rect');
-  keypad.setAttribute('x', '63'); keypad.setAttribute('y', '63');
-  keypad.setAttribute('width', '74'); keypad.setAttribute('height', '74');
-  keypad.setAttribute('rx', '2');
-  keypad.setAttribute('fill', '#8899BB'); keypad.setAttribute('stroke', '#3C8B6E');
-  keypad.setAttribute('stroke-width', '1.5'); keypad.setAttribute('pointer-events', 'none');
-  svg.appendChild(keypad);
+  // Spigot ring — slightly darker cream
+  el('circle', { cx:cx, cy:cy, r:60,
+    fill:'#D8CEA8', stroke:'#B8A878', 'stroke-width':1 });
 
-  // Forward direction triangle — at centre, points up (top = front), drawn last so it's on top
-  var fwdTri = document.createElementNS(ns, 'polygon');
-  fwdTri.setAttribute('points', '100,88 95,101 105,101');
-  fwdTri.setAttribute('fill', '#3C8B6E'); fwdTri.setAttribute('pointer-events', 'none');
-  svg.appendChild(fwdTri);
+  // Keypad bezel — thick green filled rect
+  el('rect', { x:cx-47, y:cy-40, width:94, height:80, fill:'#3C8B6E' });
+
+  // Keypad graphic area — white inside bezel
+  el('rect', { x:cx-38, y:cy-33, width:76, height:65, fill:'#ffffff' });
+
+  // Left eye — oval, black border, amber fill, dark pupil, white highlight
+  el('ellipse', { cx:cx-31, cy:cy-81, rx:11, ry:8, fill:'#1a1a1a' });
+  el('ellipse', { cx:cx-31, cy:cy-81, rx:9,  ry:6.5, fill:'#E8B84B' });
+  el('circle',  { cx:cx-31, cy:cy-81, r:4,   fill:'#1a1a1a' });
+  el('circle',  { cx:cx-27, cy:cy-84, r:1.8, fill:'#ffffff' });
+
+  // Right eye — oval, black border, amber fill, dark pupil, white highlight
+  el('ellipse', { cx:cx+31, cy:cy-81, rx:11, ry:8, fill:'#1a1a1a' });
+  el('ellipse', { cx:cx+31, cy:cy-81, rx:9,  ry:6.5, fill:'#E8B84B' });
+  el('circle',  { cx:cx+31, cy:cy-81, r:4,   fill:'#1a1a1a' });
+  el('circle',  { cx:cx+35, cy:cy-84, r:1.8, fill:'#ffffff' });
 
   if (bg) bg.classList.add('cd-default-mode');
   cdUpdateCanvasPenHole();
@@ -165,6 +166,14 @@ function cdSetMode(mode) {
   }
   document.getElementById('cdBtnDefault').classList.toggle('active', cdMode === 'default');
   document.getElementById('cdBtnCharacter').classList.toggle('active', cdMode === 'character');
+  // Show/hide carousel and scale immediately — synchronous, no delay
+  var _carousel = document.getElementById('cdViewCarousel');
+  var _scaleWrap = document.getElementById('cdScaleWrap');
+  var _isChar = (cdMode === 'character');
+  if (_carousel) _carousel.style.display = _isChar ? 'flex' : 'none';
+  if (_scaleWrap) _scaleWrap.style.display = _isChar ? 'flex' : 'none';
+  // Load template when switching to Character mode
+  if (_isChar) cdUpdateViewCarousel();
   rwRender();
   cdUpdatePreview();
 }
