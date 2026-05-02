@@ -1,44 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- RBB Plan View — default R3 Roamer character template -->
+<!-- RBB Plan View — Character Designer template guide (outline only) -->
 <!-- ViewBox: -110,-110 to 110,110. Centre (0,0) = pen hole. Front = top (Y-) -->
 <svg width="220mm" height="220mm" viewBox="-110 -110 220 220" version="1.1"
      xmlns="http://www.w3.org/2000/svg"
      style="stroke-linecap:round;stroke-linejoin:round;">
 
-  <!-- Body ellipse — cream, portrait -->
-  <ellipse cx="0" cy="0" rx="81" ry="100"
-           style="fill:#E8DEB8;stroke:#B8A878;stroke-width:2;"/>
+  <g>
+    <!-- Body ellipse outline — portrait -->
+    <ellipse cx="0" cy="0" rx="81" ry="100"
+             style="fill:none;stroke:#00E5FF;stroke-width:2;"/>
 
-  <!-- Spigot ring — slightly darker cream -->
-  <circle cx="0" cy="0" r="60"
-          style="fill:#D8CEA8;stroke:#B8A878;stroke-width:1;"/>
+    <!-- Spigot ring outline -->
+    <circle cx="0" cy="0" r="60"
+            style="fill:none;stroke:#00E5FF;stroke-width:1;stroke-dasharray:4,3;"/>
 
-  <!-- Keypad bezel — green, square -->
-  <rect x="-31" y="-31" width="62" height="62"
-        style="fill:#3C8B6E;stroke:none;"/>
+    <!-- Keypad bezel outline — square -->
+    <rect x="-31" y="-31" width="62" height="62"
+          style="fill:none;stroke:#00E5FF;stroke-width:1.5;"/>
 
-  <!-- Keypad graphic area — white square inside bezel -->
-  <rect x="-24" y="-24" width="48" height="48"
-        style="fill:#ffffff;stroke:none;"/>
+    <!-- Pen hole marker -->
+    <circle cx="0" cy="0" r="5"
+            style="fill:none;stroke:#00E5FF;stroke-width:1.5;"/>
 
-  <!-- Left eye — VERTICAL oval (taller than wide), black border, amber, pupil, white dot -->
-  <ellipse cx="-31" cy="-72" rx="9" ry="13"
-           style="fill:#1a1a1a;stroke:none;"/>
-  <ellipse cx="-31" cy="-72" rx="7" ry="10.5"
-           style="fill:#E8B84B;stroke:none;"/>
-  <circle cx="-31" cy="-72" r="4.5"
-          style="fill:#1a1a1a;stroke:none;"/>
-  <circle cx="-28" cy="-76" r="2"
-          style="fill:#ffffff;stroke:none;"/>
+    <!-- Forward direction indicator — small arrow pointing up -->
+    <line x1="0" y1="-70" x2="0" y2="-85"
+          style="stroke:#00E5FF;stroke-width:1.5;"/>
+    <polygon points="0,-90 -4,-80 4,-80"
+             style="fill:#00E5FF;stroke:none;"/>
 
-  <!-- Right eye — VERTICAL oval (taller than wide), black border, amber, pupil, white dot -->
-  <ellipse cx="31" cy="-72" rx="9" ry="13"
-           style="fill:#1a1a1a;stroke:none;"/>
-  <ellipse cx="31" cy="-72" rx="7" ry="10.5"
-           style="fill:#E8B84B;stroke:none;"/>
-  <circle cx="31" cy="-72" r="4.5"
-          style="fill:#1a1a1a;stroke:none;"/>
-  <circle cx="34" cy="-76" r="2"
-          style="fill:#ffffff;stroke:none;"/>
-
+  </g>
 </svg>

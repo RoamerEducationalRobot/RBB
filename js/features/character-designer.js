@@ -325,18 +325,20 @@ function cdSaveToMyRoamers() {
 function cdApplyCharacter() {
   // Apply character to Roamer Graphics and return to Settings
   cdSnapshot = null; // clear snapshot — change is intentional
-  if (cdMode === 'character' && rw._charImg) {
-    rwRender();
-  } else if (cdMode === 'default') {
-    rw._charImg = null;
-    rw.charImgSrc = null;
+  if (cdMode === 'default') {
+    // Revert to built-in R3 shape
+    rw._charImg    = null;
+    rw.charImgSrc  = null;
     rw.charImgName = null;
-    rw.charSvg = null;
+    rw.charSvg     = null;
     rwRender();
-  } else if (cdMode === 'character' && cdCanvasHasContent()) {
-    cdApplySvgToRW();
+    closeCharDesigner();
+  } else if (cdMode === 'character') {
+    // Always apply from the live SVG canvas
+    cdApplySvgToRW(function() { closeCharDesigner(); });
+  } else {
+    closeCharDesigner();
   }
-  closeCharDesigner();
 }
 
 function cdRotateChar(deg) {
@@ -416,18 +418,23 @@ function cdUpdatePreview() {
   }
   var cx = SIZE / 2;
   var cy = SIZE / 2;
-  if (cdMode === 'character' && rw.charSvg) {
-    var blob = new Blob([rw.charSvg], { type: 'image/svg+xml' });
-    var url  = URL.createObjectURL(blob);
-    var img  = new Image();
-    img.onload = function() {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.drawImage(img, -cellPx / 2, -cellPx / 2, cellPx, cellPx);
-      ctx.restore();
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
+  if (cdMode === 'character') {
+    // Always render preview from the live SVG canvas — reflects draws and erases immediately
+    var liveSvg = document.getElementById('cdCanvas');
+    if (liveSvg) {
+      var svgStr = new XMLSerializer().serializeToString(liveSvg);
+      var blob = new Blob([svgStr], { type: 'image/svg+xml' });
+      var url  = URL.createObjectURL(blob);
+      var img  = new Image();
+      img.onload = function() {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.drawImage(img, -cellPx / 2, -cellPx / 2, cellPx, cellPx);
+        ctx.restore();
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
   } else {
     // Default mode — always show R3 shape
     cdDrawDefaultTriangle(ctx, cx, cy, cellPx);
@@ -834,7 +841,10 @@ function cdUpdateViewCarousel() {
 // Legacy stub — called from old dropdown (no longer used but kept for safety)
 function cdSetView(view) { }
 function cdCycleView() { cdViewNext(); }
-function cdInitNavCube() { cdUpdateViewCarousel(); }
+function cdInitNavCube() {
+  // Only load template in Character mode — Default mode uses procedural drawing
+  if (cdMode === 'character') { cdUpdateViewCarousel(); }
+}
 
 // ── Character Designer — Step 3: Drawing Tools ───────────────────────────────
 
