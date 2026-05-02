@@ -712,6 +712,7 @@ var CD_VIEWS = [
   { key: 'left',      label: 'Left Side',  file: 'assets/characters/RBB_Elevation.svg' }
 ];
 var cdViewIdx = 0;  // index into CD_VIEWS
+var cdTemplateScale = 1.0;  // current scale from slider
 
 function cdViewNext() {
   cdViewIdx = (cdViewIdx + 1) % CD_VIEWS.length;
@@ -725,64 +726,73 @@ function cdViewPrev() {
 
 function cdUpdateViewCarousel() {
   var v = CD_VIEWS[cdViewIdx];
+
+  // Update label
   var label = document.getElementById('cdViewLabel');
   if (label) label.textContent = v.label;
 
   var canvas = document.getElementById('cdCanvas');
-  if (!canvas) return;
+  if (!canvas) { console.warn('cdUpdateViewCarousel: cdCanvas not found'); return; }
 
-  // Ensure template group exists behind all drawing content
+  // Ensure template group exists as first child (behind all drawing content)
   var tg = document.getElementById('cdTemplateGroup');
   if (!tg) {
     tg = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     tg.setAttribute('id', 'cdTemplateGroup');
-    tg.setAttribute('opacity', '0.4');
+    tg.setAttribute('opacity', '0.45');
     canvas.insertBefore(tg, canvas.firstChild);
   }
 
-  // Fetch SVG text and inject as inline content
-  var basePath = window.location.href.replace(/\/[^\/]*$/, '/');
-  fetch(basePath + v.file)
-    .then(function(r) { return r.text(); })
+  // Build fetch URL — works on GitHub Pages and locally
+  var base = window.location.href.split('?')[0];  // strip query string
+  if (base.slice(-1) !== '/') base = base.substring(0, base.lastIndexOf('/') + 1);
+  var url = base + v.file;
+
+  fetch(url)
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
+      return r.text();
+    })
     .then(function(svgText) {
-      // Extract inner content from the fetched SVG
       var parser = new DOMParser();
       var doc = parser.parseFromString(svgText, 'image/svg+xml');
       var fetchedSvg = doc.querySelector('svg');
-      if (!fetchedSvg) return;
+      if (!fetchedSvg) { console.warn('cdUpdateViewCarousel: no <svg> in', url); return; }
 
-      // Get viewBox from fetched SVG to set up scaling transform
-      var vb = fetchedSvg.getAttribute('viewBox') || '-110 -110 220 220';
-      var parts = vb.trim().split(/[\s,]+/).map(Number);
-      var vw = parts[2], vh = parts[3];
-      var vx = parts[0], vy = parts[1];
+      // Determine base fit-to-canvas scale from viewBox
+      var vb = (fetchedSvg.getAttribute('viewBox') || '-110 -110 220 220').trim().split(/[\s,]+/).map(Number);
+      var vx = vb[0], vy = vb[1], vw = vb[2], vh = vb[3];
+      var fitScale = Math.min(200 / vw, 200 / vh);
 
-      // Scale to fit 200x200 canvas, centred
-      var scale = Math.min(200 / vw, 200 / vh);
-      var tx = 100 - (vx + vw / 2) * scale;
-      var ty = 100 - (vy + vh / 2) * scale;
+      // Apply user scale on top of fit scale
+      var finalScale = fitScale * cdTemplateScale;
+      var tx = 100 - (vx + vw / 2) * finalScale;
+      var ty = 100 - (vy + vh / 2) * finalScale;
 
       // Mirror left side view
-      var mirror = (v.key === 'left') ? ' scale(-1,1) translate(-200,0)' : '';
-      tg.setAttribute('transform', 'translate(' + tx + ',' + ty + ') scale(' + scale + ')' + mirror);
+      if (v.key === 'left') {
+        tg.setAttribute('transform',
+          'translate(200,0) scale(-1,1) translate(' + tx + ',' + ty + ') scale(' + finalScale + ')');
+      } else {
+        tg.setAttribute('transform', 'translate(' + tx + ',' + ty + ') scale(' + finalScale + ')');
+      }
 
-      // Inject all child elements from the fetched SVG's <g>
+      // Inject SVG content
       tg.innerHTML = '';
       var fetchedG = fetchedSvg.querySelector('g');
       if (fetchedG) {
-        tg.innerHTML = fetchedG.innerHTML;
-        // Preserve the g's own transform
+        // Wrap in inner g to preserve any QCAD transform (e.g. scale(1,-1))
+        var inner = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         var gt = fetchedG.getAttribute('transform');
-        if (gt) {
-          var inner = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-          inner.setAttribute('transform', gt);
-          inner.innerHTML = tg.innerHTML;
-          tg.innerHTML = '';
-          tg.appendChild(inner);
-        }
+        if (gt) inner.setAttribute('transform', gt);
+        inner.innerHTML = fetchedG.innerHTML;
+        tg.appendChild(inner);
+      } else {
+        // No <g> wrapper — inject SVG children directly
+        tg.innerHTML = fetchedSvg.innerHTML;
       }
     })
-    .catch(function(e) { console.warn('cdUpdateViewCarousel: could not load', v.file, e); });
+    .catch(function(e) { console.warn('cdUpdateViewCarousel fetch failed:', e.message, url); });
 }
 
 // Legacy stub — called from old dropdown (no longer used but kept for safety)
@@ -797,21 +807,15 @@ function cdInitNavCube() { cdUpdateViewCarousel(); }
 function cdOnScaleChange(val) {
   var display = document.getElementById('cdScaleValue');
   if (display) display.textContent = val + '%';
-  var scale = val / 100;
 
-  // Scale the loaded costume image if present
+  // Store scale and reload template at new size
+  cdTemplateScale = val / 100;
+  cdUpdateViewCarousel();
+
+  // Scale any loaded costume image too
   var img = document.getElementById('cdCostumeImage');
   if (img) {
     img.setAttribute('transform',
-      'translate(100,100) scale(' + scale + ') translate(-100,-100)');
-  }
-
-  // Also scale the template guide
-  var tg = document.getElementById('cdTemplateGroup');
-  if (tg) {
-    // Reapply template with new scale
-    var currentTransform = tg.getAttribute('transform') || '';
-    // Extract base transform (without scale component) and reapply
-    cdUpdateViewCarousel();  // reload at current view — scale is baked in next time
+      'translate(100,100) scale(' + cdTemplateScale + ') translate(-100,-100)');
   }
 }
