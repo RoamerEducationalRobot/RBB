@@ -89,23 +89,22 @@ function cdShowDefaultOnCanvas() {
   el('circle', { cx:cx, cy:cy, r:60,
     fill:'#D8CEA8', stroke:'#B8A878', 'stroke-width':1 });
 
-  // Keypad bezel — thick green filled rect
-  el('rect', { x:cx-47, y:cy-40, width:94, height:80, fill:'#3C8B6E' });
+  // Keypad bezel — green, square
+  el('rect', { x:cx-38, y:cy-10, width:76, height:76, fill:'#3C8B6E' });
+  // Keypad white interior — square
+  el('rect', { x:cx-30, y:cy-2, width:60, height:60, fill:'#ffffff' });
 
-  // Keypad graphic area — white inside bezel
-  el('rect', { x:cx-38, y:cy-33, width:76, height:65, fill:'#ffffff' });
+  // Left eye — VERTICAL oval (taller than wide)
+  el('ellipse', { cx:cx-31, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });
+  el('ellipse', { cx:cx-31, cy:cy-72, rx:7,   ry:10.5, fill:'#E8B84B' });
+  el('circle',  { cx:cx-31, cy:cy-72, r:4.5,           fill:'#1a1a1a' });
+  el('circle',  { cx:cx-28, cy:cy-76, r:2,             fill:'#ffffff' });
 
-  // Left eye — oval, black border, amber fill, dark pupil, white highlight
-  el('ellipse', { cx:cx-31, cy:cy-81, rx:11, ry:8, fill:'#1a1a1a' });
-  el('ellipse', { cx:cx-31, cy:cy-81, rx:9,  ry:6.5, fill:'#E8B84B' });
-  el('circle',  { cx:cx-31, cy:cy-81, r:4,   fill:'#1a1a1a' });
-  el('circle',  { cx:cx-27, cy:cy-84, r:1.8, fill:'#ffffff' });
-
-  // Right eye — oval, black border, amber fill, dark pupil, white highlight
-  el('ellipse', { cx:cx+31, cy:cy-81, rx:11, ry:8, fill:'#1a1a1a' });
-  el('ellipse', { cx:cx+31, cy:cy-81, rx:9,  ry:6.5, fill:'#E8B84B' });
-  el('circle',  { cx:cx+31, cy:cy-81, r:4,   fill:'#1a1a1a' });
-  el('circle',  { cx:cx+35, cy:cy-84, r:1.8, fill:'#ffffff' });
+  // Right eye — VERTICAL oval (taller than wide)
+  el('ellipse', { cx:cx+31, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });
+  el('ellipse', { cx:cx+31, cy:cy-72, rx:7,   ry:10.5, fill:'#E8B84B' });
+  el('circle',  { cx:cx+31, cy:cy-72, r:4.5,           fill:'#1a1a1a' });
+  el('circle',  { cx:cx+34, cy:cy-76, r:2,             fill:'#ffffff' });
 
   if (bg) bg.classList.add('cd-default-mode');
   cdUpdateCanvasPenHole();

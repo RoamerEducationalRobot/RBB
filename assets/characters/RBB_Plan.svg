@@ -13,36 +13,32 @@
   <circle cx="0" cy="0" r="60"
           style="fill:#D8CEA8;stroke:#B8A878;stroke-width:1;"/>
 
-  <!-- Keypad bezel — thick green border (outer rect) -->
-  <rect x="-47" y="-40" width="94" height="80"
+  <!-- Keypad bezel — green, square -->
+  <rect x="-38" y="-10" width="76" height="76"
         style="fill:#3C8B6E;stroke:none;"/>
 
-  <!-- Keypad graphic area — white fill inside bezel -->
-  <rect x="-38" y="-33" width="76" height="65"
+  <!-- Keypad graphic area — white square inside bezel -->
+  <rect x="-30" y="-2" width="60" height="60"
         style="fill:#ffffff;stroke:none;"/>
 
-  <!-- Left eye — oval, black border, amber fill, dark pupil, white highlight -->
-  <!-- Outer black border (oval) -->
-  <ellipse cx="-31" cy="-81" rx="11" ry="8"
+  <!-- Left eye — VERTICAL oval (taller than wide), black border, amber, pupil, white dot -->
+  <ellipse cx="-31" cy="-72" rx="9" ry="13"
            style="fill:#1a1a1a;stroke:none;"/>
-  <!-- Amber/golden eye fill -->
-  <ellipse cx="-31" cy="-81" rx="9" ry="6.5"
+  <ellipse cx="-31" cy="-72" rx="7" ry="10.5"
            style="fill:#E8B84B;stroke:none;"/>
-  <!-- Dark pupil -->
-  <circle cx="-31" cy="-81" r="4"
+  <circle cx="-31" cy="-72" r="4.5"
           style="fill:#1a1a1a;stroke:none;"/>
-  <!-- White specular highlight -->
-  <circle cx="-27" cy="-84" r="1.8"
+  <circle cx="-28" cy="-76" r="2"
           style="fill:#ffffff;stroke:none;"/>
 
-  <!-- Right eye — oval, black border, amber fill, dark pupil, white highlight -->
-  <ellipse cx="31" cy="-81" rx="11" ry="8"
+  <!-- Right eye — VERTICAL oval (taller than wide), black border, amber, pupil, white dot -->
+  <ellipse cx="31" cy="-72" rx="9" ry="13"
            style="fill:#1a1a1a;stroke:none;"/>
-  <ellipse cx="31" cy="-81" rx="9" ry="6.5"
+  <ellipse cx="31" cy="-72" rx="7" ry="10.5"
            style="fill:#E8B84B;stroke:none;"/>
-  <circle cx="31" cy="-81" r="4"
+  <circle cx="31" cy="-72" r="4.5"
           style="fill:#1a1a1a;stroke:none;"/>
-  <circle cx="35" cy="-84" r="1.8"
+  <circle cx="34" cy="-76" r="2"
           style="fill:#ffffff;stroke:none;"/>
 
 </svg>

@@ -326,57 +326,51 @@ function rwDrawRoamer() {
     rwCtx.fill();
     rwCtx.stroke();
 
-    // Keypad bezel — thick green filled rect
-    var kh  = r  * 0.40;   // half-height of bezel (along heading)
-    var kw  = ry * 0.58;   // half-width  of bezel (across heading)
-    var kwi = ry * 0.47;   // half-width  of white interior
-    var khi = r  * 0.325;  // half-height of white interior
+    // Keypad bezel — green square
+    var ks  = Math.min(r, ry) * 0.38;  // half-size of square keypad
+    var ksi = ks * 0.79;               // white interior half-size
+    // Centre keypad slightly below body centre (towards rear)
+    var kcy = r * 0.10;
     rwCtx.beginPath();
-    rwCtx.rect(-kw, -kh, kw * 2, kh * 2);
-    rwCtx.fillStyle = '#3C8B6E';
-    rwCtx.fill();
-    // White interior
+    rwCtx.rect(-ks, kcy - ks, ks * 2, ks * 2);
+    rwCtx.fillStyle = '#3C8B6E'; rwCtx.fill();
     rwCtx.beginPath();
-    rwCtx.rect(-kwi, -khi, kwi * 2, khi * 2);
-    rwCtx.fillStyle = '#ffffff';
-    rwCtx.fill();
+    rwCtx.rect(-ksi, kcy - ksi, ksi * 2, ksi * 2);
+    rwCtx.fillStyle = '#ffffff'; rwCtx.fill();
   }
 
   rwCtx.restore();
 
-  // Eyes — oval with black border, amber fill, dark pupil, white highlight
-  var eyeRx = Math.max(2, r * 0.11);   // oval horizontal radius
-  var eyeRy = Math.max(1.5, r * 0.08); // oval vertical radius
-  var pupilR = Math.max(1, r * 0.04);
-  var eyeY  = -r * 0.81;               // well forward of centre
-  var eyeX  = ry * 0.38;               // either side of centre
+  // Eyes — VERTICAL ovals (taller than wide), black border, amber, pupil, white dot
+  var eyeRx  = Math.max(2,   r * 0.09);  // horizontal radius (shorter)
+  var eyeRy  = Math.max(2.5, r * 0.13);  // vertical radius (taller)
+  var pupilR = Math.max(1,   r * 0.045);
+  var eyeY   = -r * 0.72;
+  var eyeX   = ry * 0.38;
 
   rwCtx.save();
   rwCtx.translate(pxHoleX, pxHoleY);
   rwCtx.rotate(rad);
 
   [-eyeX, eyeX].forEach(function(ex) {
-    var hlx = ex + eyeRx * 0.35;  // highlight offset
+    var hlx = ex + eyeRx * 0.35;
+    var hly = eyeY - eyeRy * 0.40;
     // Black border (outer oval)
     rwCtx.beginPath();
     rwCtx.ellipse(ex, eyeY, eyeRx, eyeRy, 0, 0, Math.PI * 2);
-    rwCtx.fillStyle = '#1a1a1a';
-    rwCtx.fill();
-    // Amber eye fill
+    rwCtx.fillStyle = '#1a1a1a'; rwCtx.fill();
+    // Amber fill
     rwCtx.beginPath();
-    rwCtx.ellipse(ex, eyeY, eyeRx * 0.82, eyeRy * 0.82, 0, 0, Math.PI * 2);
-    rwCtx.fillStyle = '#E8B84B';
-    rwCtx.fill();
-    // Dark pupil
+    rwCtx.ellipse(ex, eyeY, eyeRx * 0.80, eyeRy * 0.82, 0, 0, Math.PI * 2);
+    rwCtx.fillStyle = '#E8B84B'; rwCtx.fill();
+    // Pupil
     rwCtx.beginPath();
-    rwCtx.arc(ex, eyeY, pupilR * 0.9, 0, Math.PI * 2);
-    rwCtx.fillStyle = '#1a1a1a';
-    rwCtx.fill();
-    // White specular highlight
+    rwCtx.arc(ex, eyeY, pupilR, 0, Math.PI * 2);
+    rwCtx.fillStyle = '#1a1a1a'; rwCtx.fill();
+    // White highlight dot
     rwCtx.beginPath();
-    rwCtx.arc(hlx, eyeY - eyeRy * 0.4, pupilR * 0.55, 0, Math.PI * 2);
-    rwCtx.fillStyle = '#ffffff';
-    rwCtx.fill();
+    rwCtx.arc(hlx, hly, pupilR * 0.5, 0, Math.PI * 2);
+    rwCtx.fillStyle = '#ffffff'; rwCtx.fill();
   });
 
   rwCtx.restore();
