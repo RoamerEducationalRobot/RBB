@@ -438,45 +438,70 @@ function cdUpdatePreview() {
 }
 
 function cdDrawDefaultTriangle(ctx, cx, cy, cellPx) {
-  // Draws the R3 Roamer shape (ellipse + spigot + keypad) centred on (cx, cy)
-  var r  = cellPx * 0.5;   // half major axis
-  var ry = r * 0.81;       // half minor axis
+  // Draws the R3 Roamer shape centred on (cx, cy)
+  // Body ellipse, spigot, square keypad with bezel, oval eyes
+  var r  = cellPx * 0.5;   // half major axis (vertical)
+  var ry = r * 0.81;       // half minor axis (horizontal)
   ctx.save();
   ctx.translate(cx, cy);
-  // Body ellipse (major axis vertical)
+
+  // Body ellipse
   ctx.beginPath();
   ctx.ellipse(0, 0, ry, r, 0, 0, Math.PI * 2);
   ctx.fillStyle   = '#E8DEB8';
   ctx.strokeStyle = '#B8A878';
   ctx.lineWidth   = 1.5;
-  ctx.fill();
-  ctx.stroke();
-  // Spigot
+  ctx.fill(); ctx.stroke();
+
+  // Spigot ring
   ctx.beginPath();
   ctx.arc(0, 0, r * 0.6, 0, Math.PI * 2);
   ctx.fillStyle   = '#D8CEA8';
   ctx.strokeStyle = '#B8A878';
   ctx.lineWidth   = 1;
-  ctx.fill();
-  ctx.stroke();
-  // Keypad recess
-  var kh = r * 0.37, kw = ry * 0.457, kr = 1;  // essentially square corners
+  ctx.fill(); ctx.stroke();
+
+  // Keypad bezel — green square
+  var ks  = Math.min(r, ry) * 0.38;
+  var ksi = ks * 0.79;
   ctx.beginPath();
-  ctx.roundRect(-kw, -kh, kw * 2, kh * 2, kr);
-  ctx.fillStyle   = '#8899BB';
-  ctx.strokeStyle = '#B8A878';
-  ctx.lineWidth   = 1;
-  ctx.fill();
-  ctx.stroke();
-  // Forward direction triangle — always visible, at centre
-  var tS = Math.max(1.5, r * 0.10);
-  ctx.beginPath();
-  ctx.moveTo(0, -tS * 1.8);
-  ctx.lineTo(-tS * 0.7, tS * 0.5);
-  ctx.lineTo( tS * 0.7, tS * 0.5);
-  ctx.closePath();
+  ctx.rect(-ks, -ks, ks * 2, ks * 2);
   ctx.fillStyle = '#3C8B6E';
   ctx.fill();
+  // White interior
+  ctx.beginPath();
+  ctx.rect(-ksi, -ksi, ksi * 2, ksi * 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+
+  // Eyes — vertical ovals near the front (top)
+  var eyeRx  = Math.max(2,   r * 0.09);
+  var eyeRy  = Math.max(2.5, r * 0.13);
+  var pupilR = Math.max(1,   r * 0.045);
+  var eyeY   = -r * 0.72;
+  var eyeX   = ry * 0.38;
+
+  [-eyeX, eyeX].forEach(function(ex) {
+    var hlx = ex + eyeRx * 0.35;
+    var hly = eyeY - eyeRy * 0.40;
+    // Black border
+    ctx.beginPath();
+    ctx.ellipse(ex, eyeY, eyeRx, eyeRy, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a1a1a'; ctx.fill();
+    // Amber fill
+    ctx.beginPath();
+    ctx.ellipse(ex, eyeY, eyeRx * 0.80, eyeRy * 0.82, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#E8B84B'; ctx.fill();
+    // Pupil
+    ctx.beginPath();
+    ctx.arc(ex, eyeY, pupilR, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a1a1a'; ctx.fill();
+    // White highlight
+    ctx.beginPath();
+    ctx.arc(hlx, hly, pupilR * 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff'; ctx.fill();
+  });
+
   ctx.restore();
 }
 
