@@ -329,10 +329,9 @@ function rwDrawRoamer() {
     // Keypad bezel — green square
     var ks  = Math.min(r, ry) * 0.38;  // half-size of square keypad
     var ksi = ks * 0.79;               // white interior half-size
-    // Centre keypad slightly below body centre (towards rear)
-    var kcy = r * 0.10;
+    // Keypad centred at body/spigot centre (0,0)
     rwCtx.beginPath();
-    rwCtx.rect(-ks, kcy - ks, ks * 2, ks * 2);
+    rwCtx.rect(-ks, -ks, ks * 2, ks * 2);
     rwCtx.fillStyle = '#3C8B6E'; rwCtx.fill();
     rwCtx.beginPath();
     rwCtx.rect(-ksi, -ksi, ksi * 2, ksi * 2);
