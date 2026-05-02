@@ -1289,10 +1289,11 @@
             <span id="cdScaleValue">100%</span>
           </div>
 
-          <!-- Apply / Cancel -->
+          <!-- Save to Library / Cancel / Apply -->
           <div id="cdGizmoButtons">
             <button class="ph-btn cancel" onclick="closeCharDesignerWithCheck()">Cancel</button>
             <button class="ph-btn ok" onclick="cdApplyCharacter()">Apply</button>
+            <button class="ph-btn secondary" id="cdBtnSaveLibrary" onclick="cdSaveToLibrary()" title="Save character to My Roamers for use in future sessions">Save to Your Library</button>
           </div>
 
         </div>
@@ -1386,8 +1387,8 @@
   <!-- Unapplied changes dialogue -->
   <div id="cdChangesDialog" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center;">
     <div style="background:#1a2a4a; border:2px solid #4a6aaa; border-radius:8px; padding:24px; max-width:360px; font-family:Arial,sans-serif;">
-      <div style="color:#fff; font-size:14px; font-weight:bold; margin-bottom:16px;">You have unapplied changes</div>
-      <div style="color:#aac4ff; font-size:12px; margin-bottom:20px;">What do you want to do?</div>
+      <div style="color:#fff; font-size:14px; font-weight:bold; margin-bottom:16px;">Your changes will be lost</div>
+      <div style="color:#aac4ff; font-size:12px; margin-bottom:20px;">Are you sure you want to cancel?</div>
       <div style="display:flex; gap:8px; justify-content:flex-end;">
         <button class="ph-btn cancel" onclick="cdDialogCancel()">Cancel</button>
         <button class="ph-btn cancel" onclick="cdDialogSave()">Save</button>

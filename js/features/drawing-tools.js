@@ -6,6 +6,7 @@ var cdActiveTool    = null;        // active tool name
 var cdPolyPoints    = [];          // in-progress polygon points [[x,y],...]
 var cdPolyPreview   = null;        // preview polyline element
 var cdSprayTimer    = null;        // spray interval timer
+var cdUndoStack     = [];          // array of SVG innerHTML snapshots for undo
 var cdStrokeColour  = '#000000';   // current stroke / line colour
 var cdStrokeWidth   = 2;           // 1–5
 var cdLineType      = 'solid';     // 'solid' | 'dashed' | 'dotted'
@@ -139,11 +140,55 @@ var cdRectDraw = null;   // { startX, startY, previewEl }
 
 // ── Helper: insert shape before pen hole dot ─────────────────────────────────
 function cdInsertShape(svg, el) {
+  cdUndoPush(svg);  // save state before adding shape
   var dot = svg.querySelector('.cd-pen-hole-dot');
   if (dot) svg.insertBefore(el, dot);
   else svg.appendChild(el);
   cdUpdatePreview();
 }
+
+// ── Undo stack ────────────────────────────────────────────────────────────────
+function cdUndoPush(svg) {
+  // Save a snapshot of all drawn shapes (exclude template group and pen hole)
+  var shapes = Array.from(svg.querySelectorAll('.cd-drawn-shape'));
+  cdUndoStack.push(shapes.map(function(s) { return s.outerHTML; }));
+  if (cdUndoStack.length > 50) cdUndoStack.shift();  // limit stack to 50
+}
+
+function cdUndo() {
+  if (cdMode === 'default') return;
+  var svg = document.getElementById('cdCanvas');
+  if (!svg) return;
+  // Remove all currently drawn shapes
+  svg.querySelectorAll('.cd-drawn-shape').forEach(function(el) { el.parentNode.removeChild(el); });
+  // Restore previous state
+  if (cdUndoStack.length > 0) {
+    var prev = cdUndoStack.pop();
+    var ns = 'http://www.w3.org/2000/svg';
+    var dot = svg.querySelector('.cd-pen-hole-dot');
+    prev.forEach(function(html) {
+      var tmp = document.createElementNS(ns, 'g');
+      tmp.innerHTML = html;
+      var shape = tmp.firstChild;
+      if (shape) {
+        if (dot) svg.insertBefore(shape, dot);
+        else svg.appendChild(shape);
+      }
+    });
+  }
+  cdUpdatePreview();
+}
+
+// Ctrl+Z keyboard handler
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+    var overlay = document.getElementById('charDesignerOverlay');
+    if (overlay && overlay.classList.contains('active')) {
+      e.preventDefault();
+      cdUndo();
+    }
+  }
+});
 
 // ── Helper: create SVG element with common stroke/fill attributes ─────────────
 function cdMakeEl(tag) {

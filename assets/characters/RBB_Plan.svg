@@ -14,11 +14,11 @@
           style="fill:#D8CEA8;stroke:#B8A878;stroke-width:1;"/>
 
   <!-- Keypad bezel — green, square -->
-  <rect x="-38" y="-38" width="76" height="76"
+  <rect x="-31" y="-31" width="62" height="62"
         style="fill:#3C8B6E;stroke:none;"/>
 
   <!-- Keypad graphic area — white square inside bezel -->
-  <rect x="-30" y="-30" width="60" height="60"
+  <rect x="-24" y="-24" width="48" height="48"
         style="fill:#ffffff;stroke:none;"/>
 
   <!-- Left eye — VERTICAL oval (taller than wide), black border, amber, pupil, white dot -->

@@ -49,21 +49,7 @@ var rw = {
   stopFlag:false
 };
 
-// ── Set default character (Turtle) ──────────
-function rwInitDefaultCharacter() {
-  var lib = CD_LIBRARY && CD_LIBRARY.classic && CD_LIBRARY.classic[0];
-  if (!lib) return;
-  var img = new Image();
-  img.onload = function() {
-    rw._charImg    = img;
-    rw.charImgSrc  = lib.img;
-    rw.charImgName = lib.name;
-    rw.charSvg     = null;
-    rw.charRotation = 0;
-    rwRender();
-  };
-  img.src = lib.img;
-}
+// rwInitDefaultCharacter removed — R3 shape is the default (drawn procedurally)
 
 // ── Fit canvas to available space ────────────
 function rwFitCanvas() {

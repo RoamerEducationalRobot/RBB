@@ -89,10 +89,11 @@ function cdShowDefaultOnCanvas() {
   el('circle', { cx:cx, cy:cy, r:60,
     fill:'#D8CEA8', stroke:'#B8A878', 'stroke-width':1 });
 
-  // Keypad bezel — green, square
-  el('rect', { x:cx-38, y:cy-38, width:76, height:76, fill:'#3C8B6E' });
-  // Keypad white interior — square
-  el('rect', { x:cx-30, y:cy-30, width:60, height:60, fill:'#ffffff' });
+  // Keypad bezel — green square (proportional, matching preview)
+  var _ks  = Math.round(Math.min(100, 81) * 0.38);  // = 30
+  var _ksi = Math.round(_ks * 0.79);                 // = 24
+  el('rect', { x:cx-_ks,  y:cy-_ks,  width:_ks*2,  height:_ks*2,  fill:'#3C8B6E' });
+  el('rect', { x:cx-_ksi, y:cy-_ksi, width:_ksi*2, height:_ksi*2, fill:'#ffffff' });
 
   // Left eye — VERTICAL oval (taller than wide)
   el('ellipse', { cx:cx-31, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });
@@ -222,12 +223,12 @@ function cdSaveCharacter(stayOpen) {
 }
 
 function closeCharDesignerWithCheck() {
-  // Cancel button — check for unapplied changes
+  // Cancel — if user has drawn something show single Yes/No warning, else just close
   if (cdHasUnappliedChanges()) {
-    cdShowChangesDialog();
+    cdShowChangesDialog();  // Yes/No: "Your changes will be lost"
   } else {
-    // No changes — warn before discarding
-    cdConfirmCancel();
+    cdRestoreSnapshot();
+    closeCharDesigner();
   }
 }
 
@@ -247,54 +248,50 @@ function cdHideChangesDialog() {
   if (dlg) { dlg.style.display = 'none'; }
 }
 
-function cdDialogApply() {
+// Yes — confirm discard and close
+function cdDialogYes() {
   cdHideChangesDialog();
-  if (cdPendingMode === 'default') {
-    cdPendingMode = null;
-    cdApplyCharacter();
-    cdSwitchToDefault();
-  } else {
-    cdApplyCharacter();
-  }
+  cdRestoreSnapshot();
+  closeCharDesigner();
 }
 
-function cdDialogSave() {
+// No — return to editing
+function cdDialogNo() {
   cdHideChangesDialog();
-  if (cdPendingMode === 'default') {
-    cdPendingMode = null;
-    cdSaveToMyRoamers();
-    cdSwitchToDefault();
-  } else {
-    cdSaveToMyRoamers();
-    closeCharDesigner();
-  }
 }
 
-function cdDialogCancel() {
-  cdHideChangesDialog();
-  if (cdPendingMode === 'default') {
-    cdShowConfirmDialog(function() {
-      cdPendingMode = null;
-      cdSwitchToDefault();
-    });
-  } else {
-    cdShowConfirmDialog(function() {
-      closeCharDesigner();
-    });
-  }
-}
+// Keep old names as aliases for safety
+function cdDialogApply() { cdDialogYes(); }
+function cdDialogCancel() { cdDialogNo(); }
 
 var cdConfirmCallback = null;
 
 function cdConfirmCancel() {
   if (cdHasUnappliedChanges()) {
-    cdShowConfirmDialog(function() {
-      cdRestoreSnapshot();
-      closeCharDesigner();
-    });
+    cdShowChangesDialog();
   } else {
     cdRestoreSnapshot();
     closeCharDesigner();
+  }
+}
+
+// ── Save to Library ────────────────────────────────────────────────────────────
+function cdSaveToLibrary() {
+  if (!cdHasUnappliedChanges() && !rw._charImg) {
+    alert('Nothing to save — draw a character first.');
+    return;
+  }
+  cdSaveToMyRoamers();
+  // Show confirmation and stay in designer
+  var btn = document.getElementById('cdBtnSaveLibrary');
+  if (btn) {
+    var orig = btn.textContent;
+    btn.textContent = 'Saved ✓';
+    btn.disabled = true;
+    setTimeout(function() {
+      btn.textContent = orig;
+      btn.disabled = false;
+    }, 2000);
   }
 }
 
@@ -550,7 +547,7 @@ var CD_LIBRARY = {
 };
 
 // Set Turtle as default character on startup
-setTimeout(rwInitDefaultCharacter, 200);
+// rwInitDefaultCharacter removed — R3 shape is now the built-in default
 
 function cdLoadLibraryCategory(cat) {
   var grid = document.getElementById('cdLibraryGrid');
