@@ -96,16 +96,16 @@ function cdShowDefaultOnCanvas() {
   el('rect', { x:cx-_ksi, y:cy-_ksi, width:_ksi*2, height:_ksi*2, fill:'#ffffff' });
 
   // Left eye — VERTICAL oval (taller than wide)
-  el('ellipse', { cx:cx-31, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });
-  el('ellipse', { cx:cx-31, cy:cy-72, rx:7,   ry:10.5, fill:'#E8B84B' });
-  el('circle',  { cx:cx-31, cy:cy-72, r:4.5,           fill:'#1a1a1a' });
-  el('circle',  { cx:cx-28, cy:cy-76, r:2,             fill:'#ffffff' });
+  el('ellipse', { cx:cx-42, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });
+  el('ellipse', { cx:cx-42, cy:cy-72, rx:7,   ry:10.5, fill:'#E8B84B' });
+  el('circle',  { cx:cx-42, cy:cy-72, r:4.5,           fill:'#1a1a1a' });
+  el('circle',  { cx:cx-39, cy:cy-76, r:2,             fill:'#ffffff' });
 
   // Right eye — VERTICAL oval (taller than wide)
-  el('ellipse', { cx:cx+31, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });
-  el('ellipse', { cx:cx+31, cy:cy-72, rx:7,   ry:10.5, fill:'#E8B84B' });
-  el('circle',  { cx:cx+31, cy:cy-72, r:4.5,           fill:'#1a1a1a' });
-  el('circle',  { cx:cx+34, cy:cy-76, r:2,             fill:'#ffffff' });
+  el('ellipse', { cx:cx+42, cy:cy-72, rx:9,   ry:13,   fill:'#1a1a1a' });
+  el('ellipse', { cx:cx+42, cy:cy-72, rx:7,   ry:10.5, fill:'#E8B84B' });
+  el('circle',  { cx:cx+42, cy:cy-72, r:4.5,           fill:'#1a1a1a' });
+  el('circle',  { cx:cx+45, cy:cy-76, r:2,             fill:'#ffffff' });
 
   if (bg) bg.classList.add('cd-default-mode');
   cdUpdateCanvasPenHole();
@@ -323,22 +323,18 @@ function cdSaveToMyRoamers() {
 }
 
 function cdApplyCharacter() {
-  // Apply character to Roamer Graphics and return to Settings
+  // Apply character to Roamer Graphics and close designer
   cdSnapshot = null; // clear snapshot — change is intentional
   if (cdMode === 'default') {
-    // Revert to built-in R3 shape
     rw._charImg    = null;
     rw.charImgSrc  = null;
     rw.charImgName = null;
     rw.charSvg     = null;
     rwRender();
-    closeCharDesigner();
   } else if (cdMode === 'character') {
-    // Always apply from the live SVG canvas
-    cdApplySvgToRW(function() { closeCharDesigner(); });
-  } else {
-    closeCharDesigner();
+    cdApplySvgToRW();
   }
+  closeCharDesigner();  // always close after Apply
 }
 
 function cdRotateChar(deg) {
@@ -483,7 +479,7 @@ function cdDrawDefaultTriangle(ctx, cx, cy, cellPx) {
   var eyeRy  = Math.max(2.5, r * 0.13);
   var pupilR = Math.max(1,   r * 0.045);
   var eyeY   = -r * 0.72;
-  var eyeX   = ry * 0.38;
+  var eyeX   = ry * 0.52;  // wider spacing
 
   [-eyeX, eyeX].forEach(function(ex) {
     var hlx = ex + eyeRx * 0.35;
@@ -748,11 +744,11 @@ function cdLoadSvgOntoCanvas(svgStr) {
 // ── View carousel ─────────────────────────────────────────────────────────
 // Five views, each backed by a QCAD SVG template file
 var CD_VIEWS = [
-  { key: 'plan',      label: 'Plan (Top)', file: 'assets/characters/RBB_Plan.svg'      },
-  { key: 'front',     label: 'Front',      file: 'assets/characters/RBB_Front.svg'     },
-  { key: 'back',      label: 'Back',       file: 'assets/characters/RBB_Front.svg'     },
-  { key: 'right',     label: 'Right Side', file: 'assets/characters/RBB_Elevation.svg' },
-  { key: 'left',      label: 'Left Side',  file: 'assets/characters/RBB_Elevation.svg' }
+  { key: 'plan',  label: 'Plan (Top)', file: 'assets/characters/RBB_Plan.svg'      },
+  { key: 'front', label: 'Front',      file: 'assets/characters/RBB_Front.svg'     },
+  { key: 'back',  label: 'Back',       file: 'assets/characters/RBB_Back.svg'      },
+  { key: 'right', label: 'Right Side', file: 'assets/characters/RBB_Elevation.svg' },
+  { key: 'left',  label: 'Left Side',  file: 'assets/characters/RBB_ElevationL.svg' }
 ];
 var cdViewIdx = 0;  // index into CD_VIEWS
 var cdTemplateScale = 1.0;  // current scale from slider
@@ -784,6 +780,31 @@ function cdUpdateViewCarousel() {
     tg.setAttribute('id', 'cdTemplateGroup');
     tg.setAttribute('opacity', '0.45');
     canvas.insertBefore(tg, canvas.firstChild);
+  }
+
+  // Views other than Plan are work in progress — show message
+  if (v.key !== 'plan') {
+    tg.innerHTML = '';
+    var ns = 'http://www.w3.org/2000/svg';
+    var rect = document.createElementNS(ns, 'rect');
+    rect.setAttribute('x','10'); rect.setAttribute('y','80');
+    rect.setAttribute('width','180'); rect.setAttribute('height','40');
+    rect.setAttribute('rx','6');
+    rect.setAttribute('style','fill:#1E2E53;stroke:#3a5a9a;stroke-width:1;');
+    tg.appendChild(rect);
+    var txt = document.createElementNS(ns, 'text');
+    txt.setAttribute('x','100'); txt.setAttribute('y','97');
+    txt.setAttribute('text-anchor','middle');
+    txt.setAttribute('style','fill:#aac4ff;font-size:9px;font-family:Arial;');
+    txt.textContent = v.label + ' view';
+    tg.appendChild(txt);
+    var txt2 = document.createElementNS(ns, 'text');
+    txt2.setAttribute('x','100'); txt2.setAttribute('y','111');
+    txt2.setAttribute('text-anchor','middle');
+    txt2.setAttribute('style','fill:#6a8abf;font-size:8px;font-family:Arial;font-style:italic;');
+    txt2.textContent = 'Work in progress';
+    tg.appendChild(txt2);
+    return;
   }
 
   // Build fetch URL — works on GitHub Pages and locally

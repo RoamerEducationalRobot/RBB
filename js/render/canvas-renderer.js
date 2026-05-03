@@ -331,7 +331,7 @@ function rwDrawRoamer() {
   var eyeRy  = Math.max(2.5, r * 0.13);  // vertical radius (taller)
   var pupilR = Math.max(1,   r * 0.045);
   var eyeY   = -r * 0.72;
-  var eyeX   = ry * 0.38;
+  var eyeX   = ry * 0.52;  // wider spacing
 
   rwCtx.save();
   rwCtx.translate(pxHoleX, pxHoleY);

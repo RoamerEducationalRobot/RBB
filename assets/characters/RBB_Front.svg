@@ -1,37 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- RBB Front View — coloured template for Character Designer -->
-<svg width="182mm" height="90mm" viewBox="-91 -45 182 90" version="1.1"
+<svg width="175mm" height="75mm" viewBox="-90 -40 180 80" version="1.1"
      xmlns="http://www.w3.org/2000/svg"
      style="stroke-linecap:round;stroke-linejoin:round;">
-
-  <!-- Front view: looking at Roamer head-on -->
   <g>
-
-    <!-- Body silhouette — filled cream -->
-    <!-- Based on Front.svg QCAD profile: width=162, height=70 -->
-    <!-- Corners have r=15 arcs; bottom flat; sides curve inward slightly at top -->
-    <path d="M -81,-20
-             A 15,15 0 0,1 -66,-35
-             L  66,-35
-             A 15,15 0 0,1  81,-20
-             C  81,-20  81,25  81,25
-             L  63,35
-             L -63,35
-             L -81,25
-             C -81,25 -81,-20 -81,-20 Z"
-          style="fill:#E8DEB8;stroke:#B8A878;stroke-width:1.0;"/>
-
-    <!-- Keypad base indicator (green lines at bottom centre, visible from front) -->
-    <line x1="-37" y1="35" x2="-37" y2="22"
-          style="stroke:#3C8B6E;stroke-width:1.5;"/>
-    <line x1=" 37" y1="35" x2=" 37" y2="22"
-          style="stroke:#3C8B6E;stroke-width:1.5;"/>
-    <line x1="-37" y1="22" x2=" 37" y2="22"
-          style="stroke:#3C8B6E;stroke-width:1.5;"/>
-
-    <!-- Pen hole / centre marker -->
-    <circle cx="0" cy="-5" r="5"
-            style="fill:#E8DEB8;stroke:#3C8B6E;stroke-width:1.5;"/>
-
+    <path d="M -66,32.5
+A 15,15 0 0,0 -81,17.5
+C -81.23,-5.34 -79.55,-12.72 -77.56,-17.57
+C -75.58,-22.41 -73.29,-24.72 -70.90,-25.99
+C -68.51,-27.27 -66,-27.5 -66,-27.5
+A 5,5 0 0,1 -71,-32.5
+L 71,-32.5
+A 5,5 0 0,1 66,-27.5
+C 68.51,-27.27 70.90,-25.99 73.29,-24.72
+C 75.58,-22.41 77.56,-17.57 79.55,-12.72
+C 81.23,-5.34 81,17.5 81,17.5
+A 15,15 0 0,0 66,32.5
+Z" style="fill:#E8DEB8;stroke:#B8A878;stroke-width:2;"/>
+    
+    <ellipse cx="-24" cy="-8" rx="6.3" ry="9.3" style="fill:#1a1a1a;stroke:none;"/>
+    <ellipse cx="-24" cy="-8" rx="5.0" ry="7.5" style="fill:#E8B84B;stroke:none;"/>
+    <circle  cx="-24" cy="-8" r="2.8"  style="fill:#1a1a1a;stroke:none;"/>
+    <circle  cx="-25.8"  cy="-10.5" r="1.2" style="fill:#ffffff;stroke:none;"/>
+    
+    <ellipse cx="24" cy="-8" rx="6.3" ry="9.3" style="fill:#1a1a1a;stroke:none;"/>
+    <ellipse cx="24" cy="-8" rx="5.0" ry="7.5" style="fill:#E8B84B;stroke:none;"/>
+    <circle  cx="24" cy="-8" r="2.8"  style="fill:#1a1a1a;stroke:none;"/>
+    <circle  cx="25.8"  cy="-10.5" r="1.2" style="fill:#ffffff;stroke:none;"/>
   </g>
 </svg>

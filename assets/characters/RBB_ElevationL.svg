@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- RBB Right Side Elevation — QCAD geometry, front faces LEFT -->
+<!-- RBB Left Side Elevation — QCAD geometry, front faces RIGHT -->
 <svg width="200.0473mm" height="65mm" viewBox="-100.0237 -240 200.0473 65" version="1.1"
      xmlns="http://www.w3.org/2000/svg"
      style="stroke-linecap:round;stroke-linejoin:round;">
   <g transform="scale(1,-1)">
 
-    <!-- Filled body -->
     <path d="M -85,175 
 L 85,175
 A 15,15 0 0,1 100,190
@@ -24,19 +23,17 @@ A 15,15 0 0,1 -85,175
 Z"
           style="fill:#E8DEB8;stroke:#B8A878;stroke-width:0.8;"/>
 
-    <!-- Spigot ledge indicator -->
     <path d="M -59.4291,175 L -20.4291,175"
           style="stroke:#B8A878;stroke-width:1.5;fill:none;"/>
 
-    <!-- Eye — vertical oval, front end (left in this view) -->
-    <!-- In QCAD coords: x≈-85, y≈220 (upper body) -->
-    <ellipse cx="-82" cy="220" rx="3" ry="4.5"
+    <!-- Eye on RIGHT side (front) -->
+    <ellipse cx="82" cy="220" rx="3" ry="4.5"
              style="fill:#1a1a1a;stroke:none;"/>
-    <ellipse cx="-82" cy="220" rx="2.3" ry="3.5"
+    <ellipse cx="82" cy="220" rx="2.3" ry="3.5"
              style="fill:#E8B84B;stroke:none;"/>
-    <circle  cx="-82" cy="220" r="1.4"
+    <circle  cx="82" cy="220" r="1.4"
              style="fill:#1a1a1a;stroke:none;"/>
-    <circle  cx="-80.5" cy="221.5" r="0.6"
+    <circle  cx="83.5" cy="221.5" r="0.6"
              style="fill:#ffffff;stroke:none;"/>
 
   </g>
