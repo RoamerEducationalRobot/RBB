@@ -630,6 +630,8 @@
     .ph-btn.cancel:hover { background: #3a5090; }
     .ph-btn.ok { background: #00A0E3; color: #fff; }
     .ph-btn.ok:hover { background: #0090d0; }
+    .ph-btn.secondary { background: #1E2E53; color: #aac4ff; border: 1px solid #3a5a9a; }
+    .ph-btn.secondary:hover { background: #2a4080; color: #fff; }
 
 
 

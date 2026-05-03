@@ -59,8 +59,9 @@ function closeCharDesigner() {
 // Check whether the canvas has any user-drawn content
 function cdCanvasHasContent() {
   var svg = document.getElementById('cdCanvas');
-  // Has content if there are any child elements
-  return svg && svg.children.length > 0;
+  // Only true if user has actually drawn something (not just template group)
+  if (!svg) return false;
+  return svg.querySelectorAll('.cd-drawn-shape').length > 0;
 }
 
 // Draw the default R3 Roamer shape as an SVG element on the Character Designer canvas
@@ -317,9 +318,24 @@ function cdConfirmNo() {
 }
 
 function cdSaveToMyRoamers() {
-  // Save current character to My Roamers — placeholder for future implementation
-  // For now just apply it
-  cdApplyCharacter();
+  // Save current SVG canvas content to My Roamers library
+  var svg = document.getElementById('cdCanvas');
+  if (!svg) return;
+  // Serialise canvas content (excluding template group)
+  var tg = document.getElementById('cdTemplateGroup');
+  if (tg) tg.style.display = 'none';
+  var svgStr = new XMLSerializer().serializeToString(svg);
+  if (tg) tg.style.display = '';
+  // Store in My Roamers (localStorage as interim solution)
+  var name = 'Character ' + new Date().toLocaleString();
+  try {
+    var saved = JSON.parse(localStorage.getItem('rbb_my_roamers') || '[]');
+    saved.push({ name: name, svg: svgStr, date: Date.now() });
+    localStorage.setItem('rbb_my_roamers', JSON.stringify(saved));
+  } catch(e) { console.warn('Could not save to library:', e); }
+  // Refresh My Roamers panel
+  if (typeof cdBuildMyRoamersPanel === 'function') cdBuildMyRoamersPanel();
+  // Do NOT close the designer
 }
 
 function cdApplyCharacter() {
@@ -332,7 +348,16 @@ function cdApplyCharacter() {
     rw.charSvg     = null;
     rwRender();
   } else if (cdMode === 'character') {
-    cdApplySvgToRW();
+    // Only apply SVG if user has drawn something
+    // Otherwise revert to default procedural drawing
+    if (cdCanvasHasContent()) {
+      cdApplySvgToRW();
+    } else {
+      rw._charImg    = null;
+      rw.charImgSrc  = null;
+      rw.charSvg     = null;
+      rwRender();
+    }
   }
   closeCharDesigner();  // always close after Apply
 }
