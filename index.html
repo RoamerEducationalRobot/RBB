@@ -18,7 +18,7 @@
   <button onclick="fileLoad()">Upload</button>
   <button>Download</button>
   <button>Stream</button>
-  <button>Help</button>
+  <button onclick="showAbout()">Help</button>
   <div class="sep"></div>
   <a href="https://www.roamer-robotics.com" target="_blank"
      style="font-size:12px;color:#555;padding-right:12px;text-decoration:none;">
@@ -1398,6 +1398,34 @@
   </div>
 </div><!-- end charDesignerOverlay -->
 
+
+<!-- About Dialog -->
+<div id="aboutOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+     background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:8px; padding:32px 40px; max-width:340px; width:90%;
+              text-align:center; box-shadow:0 4px 24px rgba(0,0,0,0.3);">
+    <div style="font-size:20px; font-weight:bold; margin-bottom:6px;">RBB — Roamer Block Builder</div>
+    <div style="font-size:14px; color:#555; margin-bottom:16px;">Version rbb_v31</div>
+    <div style="font-size:14px; margin-bottom:8px;">Copyright &copy; Dave Catlin 2022&ndash;2026</div>
+    <div style="font-size:14px; margin-bottom:24px;">
+      <a href="https://www.roamer-robotics.com" target="_blank"
+         style="color:#1a73e8; text-decoration:none;">www.roamer-robotics.com</a>
+    </div>
+    <button onclick="closeAbout()"
+            style="padding:8px 28px; background:#1a73e8; color:#fff; border:none;
+                   border-radius:4px; font-size:14px; cursor:pointer;">OK</button>
+  </div>
+</div>
+
+<script>
+function showAbout() {
+  var el = document.getElementById('aboutOverlay');
+  el.style.display = 'flex';
+}
+function closeAbout() {
+  document.getElementById('aboutOverlay').style.display = 'none';
+}
+</script>
 
 <!-- Extracted modules (Phase 2) — load order reflects dependency graph -->
 <script src="js/keys.js"></script>
