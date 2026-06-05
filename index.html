@@ -13,7 +13,23 @@
 
 <!-- Menu Bar -->
 <div id="menuBar">
-  <button onclick="fileNew()">File</button>
+  <div class="menu-item" id="fileMenu">
+    <button onclick="toggleFileMenu()">File</button>
+    <div id="fileDropdown" class="dropdown-content" style="display:none;">
+      <div class="dropdown-item" onclick="fileNew(); closeFileMenu()">New</div>
+      <hr class="dropdown-divider">
+      <div class="dropdown-label">Mode</div>
+      <div class="dropdown-item" onclick="selectMode('discover')">Discover</div>
+      <div class="dropdown-item" onclick="selectMode('explore')">Explore</div>
+      <div class="dropdown-item" onclick="selectMode('investigate')">Investigate</div>
+      <div class="dropdown-item" onclick="selectMode('integrate')">Integrate</div>
+      <div class="dropdown-item" onclick="selectMode('send')">SEND</div>
+      <div class="dropdown-item" onclick="selectMode('robotic')">Robotic Roamer</div>
+      <div class="dropdown-item" onclick="selectMode('python')">Python</div>
+      <div class="dropdown-item" onclick="selectMode('logo')">Logo</div>
+      <div class="dropdown-item" onclick="selectMode('geogebra')">GeoGebra</div>
+    </div>
+  </div>
   <button disabled title="Save not available in this version">Save</button>
   <button onclick="fileLoad()">Upload</button>
   <button>Download</button>
@@ -69,10 +85,11 @@
   </div>
 </div>
 
-<!-- Mode selector bar -->
+<!-- Mode display bar -->
 <div id="modeBar">
   <label>Mode:</label>
-  <select id="modeSelect" onchange="applyMode(this.value)">
+  <span id="modeDisplay">Integrate</span>
+  <select id="modeSelect" style="display:none;" onchange="applyMode(this.value)">
     <option value="discover">Discover</option>
     <option value="explore">Explore</option>
     <option value="investigate">Investigate</option>
@@ -1399,6 +1416,57 @@
   </div>
 </div><!-- end charDesignerOverlay -->
 
+
+<!-- File Menu Dropdown -->
+<style>
+  .menu-item { position: relative; display: inline-block; }
+  .dropdown-content {
+    position: absolute; top: 100%; left: 0;
+    background: #fff; border: 1px solid #ccc;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000; min-width: 160px;
+    border-radius: 4px; overflow: hidden;
+  }
+  .dropdown-item {
+    padding: 8px 16px; cursor: pointer;
+    font-size: 13px; color: #333;
+  }
+  .dropdown-item:hover { background: #e8f0fe; }
+  .dropdown-label {
+    padding: 6px 16px 2px; font-size: 11px;
+    color: #888; font-weight: bold; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .dropdown-divider { border: none; border-top: 1px solid #eee; margin: 4px 0; }
+</style>
+<script>
+function toggleFileMenu() {
+  var dd = document.getElementById('fileDropdown');
+  dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+function closeFileMenu() {
+  document.getElementById('fileDropdown').style.display = 'none';
+}
+function selectMode(value) {
+  var sel = document.getElementById('modeSelect');
+  sel.value = value;
+  applyMode(value);
+  var labels = {
+    discover: 'Discover', explore: 'Explore', investigate: 'Investigate',
+    integrate: 'Integrate', send: 'SEND', robotic: 'Robotic Roamer',
+    python: 'Python', logo: 'Logo', geogebra: 'GeoGebra'
+  };
+  document.getElementById('modeDisplay').textContent = labels[value] || value;
+  closeFileMenu();
+}
+// Close dropdown if clicking outside
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('fileMenu');
+  if (menu && !menu.contains(e.target)) {
+    closeFileMenu();
+  }
+});
+</script>
 
 <!-- About Dialog -->
 <div id="aboutOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
