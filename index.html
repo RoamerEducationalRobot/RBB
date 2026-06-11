@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>RBB Integrate</title>
+  <title>RBB Integrate rbbav35</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/blockly/10.4.3/blockly_compressed.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/blockly/10.4.3/blocks_compressed.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/blockly/10.4.3/javascript_compressed.js"></script>
@@ -18,13 +18,17 @@
     <div id="fileDropdown" class="dropdown-content" style="display:none;">
       <div class="dropdown-item" onclick="fileNew(); closeFileMenu()">New</div>
       <hr class="dropdown-divider">
-      <div class="dropdown-label">Mode</div>
+      <div class="dropdown-label">Standard Behaviours</div>
       <div class="dropdown-item" onclick="selectMode('discover')">Discover</div>
       <div class="dropdown-item" onclick="selectMode('explore')">Explore</div>
       <div class="dropdown-item" onclick="selectMode('investigate')">Investigate</div>
       <div class="dropdown-item" onclick="selectMode('integrate')">Integrate</div>
+      <hr class="dropdown-divider">
+      <div class="dropdown-label">Extended Behaviours</div>
       <div class="dropdown-item" onclick="selectMode('send')">SEND</div>
       <div class="dropdown-item" onclick="selectMode('robotic')">Robotic Roamer</div>
+      <hr class="dropdown-divider">
+      <div class="dropdown-label">Programming Languages</div>
       <div class="dropdown-item" onclick="selectMode('python')">Python</div>
       <div class="dropdown-item" onclick="selectMode('logo')">Logo</div>
       <div class="dropdown-item" onclick="selectMode('geogebra')">GeoGebra</div>
@@ -88,7 +92,7 @@
 <!-- Mode display bar -->
 <div id="modeBar">
   <label>Mode:</label>
-  <span id="modeDisplay">Integrate</span>
+  <span id="modeDisplay" style="color:#fff;">Integrate</span>
   <select id="modeSelect" style="display:none;" onchange="applyMode(this.value)">
     <option value="discover">Discover</option>
     <option value="explore">Explore</option>
@@ -328,7 +332,7 @@
           <div class="settings-section">
             <div class="settings-about">
               RBB Integrate<br>
-              Version rbbav33<br>
+              Version rbbav35<br>
               &copy; Dave Catlin 2022&ndash;2026<br>
               <a href="https://www.roamer-robotics.com" target="_blank">www.roamer-robotics.com</a>
             </div>
@@ -1474,7 +1478,7 @@ document.addEventListener('click', function(e) {
   <div style="background:#fff; border-radius:8px; padding:32px 40px; max-width:340px; width:90%;
               text-align:center; box-shadow:0 4px 24px rgba(0,0,0,0.3);">
     <div style="font-size:20px; font-weight:bold; margin-bottom:6px;">RBB Integrate</div>
-    <div style="font-size:14px; color:#555; margin-bottom:16px;">Version rbbav33</div>
+    <div style="font-size:14px; color:#555; margin-bottom:16px;">Version rbbav35</div>
     <div style="font-size:14px; margin-bottom:8px;">Copyright &copy; Dave Catlin 2022&ndash;2026</div>
     <div style="font-size:14px; margin-bottom:24px;">
       <a href="https://www.roamer-robotics.com" target="_blank"
