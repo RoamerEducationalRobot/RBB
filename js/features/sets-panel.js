@@ -490,40 +490,62 @@ function sbRedraw() {
   var ry = r * 0.81;         // half minor axis
   ctx.save();
   ctx.translate(pxHoleX, pxHoleY);
-  // Body ellipse (major axis vertical = heading up)
+  // Body ellipse — cream to match Roamer Graphics
   ctx.beginPath();
   ctx.ellipse(0, 0, ry, r, 0, 0, Math.PI * 2);
-  ctx.fillStyle   = '#CCD4D9';
-  ctx.strokeStyle = '#7ab8d4';
+  ctx.fillStyle   = '#E8DEB8';
+  ctx.strokeStyle = '#B8A878';
   ctx.lineWidth   = 1.5;
   ctx.fill();
   ctx.stroke();
-  // Spigot
+  // Spigot — same cream as body
   ctx.beginPath();
   ctx.arc(0, 0, r * 0.6, 0, Math.PI * 2);
-  ctx.fillStyle   = '#bdd8e8';
-  ctx.strokeStyle = '#7ab8d4';
+  ctx.fillStyle   = '#E8DEB8';
+  ctx.strokeStyle = '#B8A878';
   ctx.lineWidth   = 0.8;
   ctx.fill();
   ctx.stroke();
-  // Keypad recess
-  var kh = r * 0.37, kw = ry * 0.457, kr = 1;  // essentially square corners
+  // Keypad recess — green square
+  var ks = Math.min(r, ry) * 0.38;
+  var ksi = ks * 0.79;
   ctx.beginPath();
-  ctx.roundRect(-kw, -kh, kw * 2, kh * 2, kr);
-  ctx.fillStyle   = '#a8c8dc';
-  ctx.strokeStyle = '#7ab8d4';
-  ctx.lineWidth   = 0.8;
-  ctx.fill();
-  ctx.stroke();
-  // Forward direction triangle — always visible, at centre, points up (heading 0)
-  var tS = Math.max(1.5, r * 0.10);
+  ctx.rect(-ks, -ks, ks * 2, ks * 2);
+  ctx.fillStyle = '#3C8B6E'; ctx.fill();
   ctx.beginPath();
-  ctx.moveTo(0, -tS * 1.8);
-  ctx.lineTo(-tS * 0.7, tS * 0.5);
-  ctx.lineTo( tS * 0.7, tS * 0.5);
-  ctx.closePath();
-  ctx.fillStyle = '#E86F61';
+  ctx.rect(-ksi, -ksi, ksi * 2, ksi * 2);
+  ctx.fillStyle = '#ffffff'; ctx.fill();
+  // Red centre dot — pen hole / turning centre
+  ctx.beginPath();
+  ctx.arc(0, 0, Math.max(1.5, r * 0.06), 0, Math.PI * 2);
+  ctx.fillStyle = '#cc0000';
   ctx.fill();
+  ctx.restore();
+
+  // Eyes — matching Roamer Graphics style
+  var eyeRx = Math.max(2.5, r * 0.11);
+  var eyeRy = Math.max(3,   r * 0.16);
+  var pupilR = Math.max(1.2, r * 0.055);
+  var eyeY = -r * 0.62;
+  var eyeX = ry * 0.48;
+  ctx.save();
+  ctx.translate(pxHoleX, pxHoleY);
+  [-eyeX, eyeX].forEach(function(ex) {
+    var hlx = ex + eyeRx * 0.35;
+    var hly = eyeY - eyeRy * 0.40;
+    ctx.beginPath();
+    ctx.ellipse(ex, eyeY, eyeRx, eyeRy, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a1a1a'; ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(ex, eyeY, eyeRx * 0.80, eyeRy * 0.82, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#E8B84B'; ctx.fill();
+    ctx.beginPath();
+    ctx.arc(ex, eyeY, pupilR, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a1a1a'; ctx.fill();
+    ctx.beginPath();
+    ctx.arc(hlx, hly, pupilR * 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff'; ctx.fill();
+  });
   ctx.restore();
 }
 

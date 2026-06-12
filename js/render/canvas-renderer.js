@@ -302,11 +302,11 @@ function rwDrawRoamer() {
     rwCtx.fill();
     rwCtx.stroke();
 
-    // Spigot circle (120/200 = 0.6 of major axis radius)
+    // Spigot circle (120/200 = 0.6 of major axis radius) — same cream as body
     var spigotR = r * 0.6;
     rwCtx.beginPath();
     rwCtx.arc(0, 0, spigotR, 0, Math.PI * 2);
-    rwCtx.fillStyle   = '#D8CEA8';  // slightly darker cream for spigot
+    rwCtx.fillStyle   = '#E8DEB8';  // same cream as body
     rwCtx.strokeStyle = '#B8A878';  // darker cream edge
     rwCtx.lineWidth   = 1;
     rwCtx.fill();
@@ -322,16 +322,22 @@ function rwDrawRoamer() {
     rwCtx.beginPath();
     rwCtx.rect(-ksi, -ksi, ksi * 2, ksi * 2);
     rwCtx.fillStyle = '#ffffff'; rwCtx.fill();
+
+    // Red centre dot — pen hole / turning centre
+    rwCtx.beginPath();
+    rwCtx.arc(0, 0, Math.max(1.5, r * 0.06), 0, Math.PI * 2);
+    rwCtx.fillStyle = '#cc0000';
+    rwCtx.fill();
   }
 
   rwCtx.restore();
 
-  // Eyes — VERTICAL ovals (taller than wide), black border, amber, pupil, white dot
-  var eyeRx  = Math.max(2,   r * 0.09);  // horizontal radius (shorter)
-  var eyeRy  = Math.max(2.5, r * 0.13);  // vertical radius (taller)
-  var pupilR = Math.max(1,   r * 0.045);
-  var eyeY   = -r * 0.72;
-  var eyeX   = ry * 0.52;  // wider spacing
+  // Eyes — VERTICAL ovals, slightly bigger and further from edge for small-size visibility
+  var eyeRx  = Math.max(2.5, r * 0.11);  // horizontal radius
+  var eyeRy  = Math.max(3,   r * 0.16);  // vertical radius (taller)
+  var pupilR = Math.max(1.2, r * 0.055);
+  var eyeY   = -r * 0.62;   // moved further from edge toward centre
+  var eyeX   = ry * 0.48;   // spacing
 
   rwCtx.save();
   rwCtx.translate(pxHoleX, pxHoleY);

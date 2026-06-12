@@ -104,7 +104,7 @@ Blockly.Blocks['block_music'] = { init: function() {
     .appendField(new Blockly.FieldNumber(4,1,9,1),'value1')
     .appendField(new Blockly.FieldNumber(1,1,14,1),'value2');
   this.setPreviousStatement(true,null); this.setNextStatement(true,null);
-  this.setColour(C_GREY); this.setTooltip('d: Play note. Duration [1-9] Pitch [1-14].');
+  this.setColour(C_GREY); this.setTooltip('d: Duration [1-9] Pitch [1-14].');
 }};
 Blockly.Blocks['block_sound_fx'] = { init: function() {
   this.appendDummyInput().appendField(img('Fx')).appendField(new Blockly.FieldNumber(1,1,999,1),'value1');
@@ -260,12 +260,12 @@ Blockly.Blocks['block_pen_down'] = { init: function() {
     .appendField(new Blockly.FieldNumber(2, 1, 5, 1), 'PEN_WIDTH');
   this.setPreviousStatement(true,null); this.setNextStatement(true,null);
   this.setColour(C_GREY);
-  this.setTooltip('PD: Pen Down — puts the pen down so Roamer draws. Colour: black white red blue yellow green orange purple pink brown. Width: 1 (thin) to 5 (Roamer width).');
+  this.setTooltip('PD: Pen colour: black white red blue yellow green orange purple pink brown. Pen width: 1 (thin) to 5 (Roamer width).');
 }};
 Blockly.Blocks['block_pen_up'] = { init: function() {
   this.appendDummyInput().appendField(img('PenUp'));
   this.setPreviousStatement(true,null); this.setNextStatement(true,null);
-  this.setColour(C_GREY); this.setTooltip('PU: Pen Up — lifts the pen so Roamer does not draw.');
+  this.setColour(C_GREY); this.setTooltip('Pu: Pen Up.');
 }};
 
 // Programming

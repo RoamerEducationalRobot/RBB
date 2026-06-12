@@ -53,7 +53,7 @@ function updatePosMarker() {
   marker.style.left = px + '%';
   marker.style.top  = py + '%';
   var h = parseFloat(document.getElementById('phHRight').value) || 0;
-  marker.style.transform = 'translate(-50%, -58.33%) rotate(' + h + 'deg)';
+  marker.style.transform = 'translate(-50%, -50%) rotate(' + h + 'deg)';
 }
 
 function updateCompassNeedle() {

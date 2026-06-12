@@ -48,10 +48,12 @@ function rwRegisterGOClick() {
     if (!svg) return;
 
     var lastFire = 0;
-    function fireGO() {
+    function fireGO(ev) {
+      // Only respond to direct clicks on the GO block, not bubbled events from children
+      ev.stopPropagation();
       if (rw.running) return;
       var now = Date.now();
-      if (now - lastFire < 500) return; // guard against double-fire
+      if (now - lastFire < 800) return; // guard against double-fire
       lastFire = now;
       if (document.getElementById('panel-rw').classList.contains('active')) {
         rwGO();
@@ -60,25 +62,30 @@ function rwRegisterGOClick() {
       }
     }
 
-    // Register in both capture and bubble phases for click and mouseup
-    svg.addEventListener('click',   fireGO, true);
-    svg.addEventListener('click',   fireGO, false);
-    svg.addEventListener('mouseup', fireGO, true);
-    svg.addEventListener('mouseup', fireGO, false);
+    // Use click only (not mouseup) to avoid double-fire
+    svg.addEventListener('click', fireGO, false);
   });
 }
 
-// Re-register whenever workspace changes (blocks added/removed)
+// Re-register whenever workspace changes (blocks added/removed/loaded)
 // Called after wsGO is initialised
 function rwInitGOClick() {
   wsGO.addChangeListener(function(ev) {
-    if (ev.type === Blockly.Events.BLOCK_CREATE ||
-        ev.type === Blockly.Events.FINISHED_LOADING ||
-        ev.type === 'create' || ev.type === 'finished_loading') {
-      setTimeout(rwRegisterGOClick, 50);
+    var t = ev.type;
+    if (t === Blockly.Events.BLOCK_CREATE ||
+        t === Blockly.Events.FINISHED_LOADING ||
+        t === 'create' || t === 'finished_loading' ||
+        t === 'move') {
+      // Clear stale registrations so blocks re-register after workspace reload
+      if (t === Blockly.Events.FINISHED_LOADING || t === 'finished_loading') {
+        wsGO.getAllBlocks(false).forEach(function(b) {
+          if (b.type === 'block_go') b._goClickRegistered = false;
+        });
+      }
+      setTimeout(rwRegisterGOClick, 100);
     }
   });
-  setTimeout(rwRegisterGOClick, 500); // initial registration
+  setTimeout(rwRegisterGOClick, 600); // initial registration
 }
 
 // ── Sidebar ───────────────────────────────────

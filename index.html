@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>RBB Integrate rbbav35</title>
+  <title>RBB rbbav36</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/blockly/10.4.3/blockly_compressed.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/blockly/10.4.3/blocks_compressed.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/blockly/10.4.3/javascript_compressed.js"></script>
@@ -18,20 +18,39 @@
     <div id="fileDropdown" class="dropdown-content" style="display:none;">
       <div class="dropdown-item" onclick="fileNew(); closeFileMenu()">New</div>
       <hr class="dropdown-divider">
-      <div class="dropdown-label">Standard Behaviours</div>
-      <div class="dropdown-item" onclick="selectMode('discover')">Discover</div>
-      <div class="dropdown-item" onclick="selectMode('explore')">Explore</div>
-      <div class="dropdown-item" onclick="selectMode('investigate')">Investigate</div>
-      <div class="dropdown-item" onclick="selectMode('integrate')">Integrate</div>
-      <hr class="dropdown-divider">
-      <div class="dropdown-label">Extended Behaviours</div>
-      <div class="dropdown-item" onclick="selectMode('send')">SEND</div>
-      <div class="dropdown-item" onclick="selectMode('robotic')">Robotic Roamer</div>
-      <hr class="dropdown-divider">
-      <div class="dropdown-label">Programming Languages</div>
-      <div class="dropdown-item" onclick="selectMode('python')">Python</div>
-      <div class="dropdown-item" onclick="selectMode('logo')">Logo</div>
-      <div class="dropdown-item" onclick="selectMode('geogebra')">GeoGebra</div>
+      <!-- Mode submenu -->
+      <div class="dropdown-submenu">
+        <div class="dropdown-item dropdown-has-sub">Mode &#9658;</div>
+        <div class="dropdown-sub-content">
+          <!-- Standard Behaviours -->
+          <div class="dropdown-submenu">
+            <div class="dropdown-item dropdown-has-sub">Standard Behaviours &#9658;</div>
+            <div class="dropdown-sub-content">
+              <div class="dropdown-item" onclick="selectMode('discover')">Discover</div>
+              <div class="dropdown-item" onclick="selectMode('explore')">Explore</div>
+              <div class="dropdown-item" onclick="selectMode('investigate')">Investigate</div>
+              <div class="dropdown-item" onclick="selectMode('integrate')">Integrate</div>
+            </div>
+          </div>
+          <!-- Extended Behaviours -->
+          <div class="dropdown-submenu">
+            <div class="dropdown-item dropdown-has-sub">Extended Behaviours &#9658;</div>
+            <div class="dropdown-sub-content">
+              <div class="dropdown-item dropdown-unavailable">SEND <span class="unavail-tag">Not yet available</span></div>
+              <div class="dropdown-item dropdown-unavailable">Robotic Roamer <span class="unavail-tag">Not yet available</span></div>
+            </div>
+          </div>
+          <!-- Programming Languages -->
+          <div class="dropdown-submenu">
+            <div class="dropdown-item dropdown-has-sub">Programming Languages &#9658;</div>
+            <div class="dropdown-sub-content">
+              <div class="dropdown-item dropdown-unavailable">Python <span class="unavail-tag">Not yet available</span></div>
+              <div class="dropdown-item" onclick="selectMode('logo')">Logo</div>
+              <div class="dropdown-item dropdown-unavailable">GeoGebra <span class="unavail-tag">Not yet available</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <button disabled title="Save not available in this version">Save</button>
@@ -92,7 +111,7 @@
 <!-- Mode display bar -->
 <div id="modeBar">
   <label>Mode:</label>
-  <span id="modeDisplay" style="color:#fff;">Integrate</span>
+  <span id="modeDisplay">Integrate</span>
   <select id="modeSelect" style="display:none;" onchange="applyMode(this.value)">
     <option value="discover">Discover</option>
     <option value="explore">Explore</option>
@@ -332,7 +351,7 @@
           <div class="settings-section">
             <div class="settings-about">
               RBB Integrate<br>
-              Version rbbav35<br>
+              Version rbbav33<br>
               &copy; Dave Catlin 2022&ndash;2026<br>
               <a href="https://www.roamer-robotics.com" target="_blank">www.roamer-robotics.com</a>
             </div>
@@ -850,14 +869,26 @@
                  width="20" height="24"
                  viewBox="-10 -12 20 24"
                  overflow="visible">
+              <!-- Body ellipse — cream -->
               <ellipse cx="0" cy="0" rx="8" ry="10"
-                    fill="#CFE8F3" stroke="#7ab8d4" stroke-width="1.2"/>
+                    fill="#E8DEB8" stroke="#B8A878" stroke-width="1.2"/>
+              <!-- Spigot — same cream -->
               <circle cx="0" cy="0" r="6"
-                    fill="#bdd8e8" stroke="#7ab8d4" stroke-width="0.8"/>
-              <rect x="-3.7" y="-3.7" width="7.4" height="7.4" rx="1"
-                    fill="#a8c8dc" stroke="#7ab8d4" stroke-width="0.8"/>
-              <polygon points="0,-1.8 -1.3,0.9 1.3,0.9"
-                    fill="#E86F61"/>
+                    fill="#E8DEB8" stroke="#B8A878" stroke-width="0.8"/>
+              <!-- Keypad — green square -->
+              <rect x="-3" y="-3" width="6" height="6" rx="0.5"
+                    fill="#3C8B6E"/>
+              <rect x="-2.4" y="-2.4" width="4.8" height="4.8" rx="0.3"
+                    fill="#ffffff"/>
+              <!-- Red centre dot — pen hole / turning centre -->
+              <circle cx="0" cy="0" r="1.2" fill="#cc0000"/>
+              <!-- Eyes -->
+              <ellipse cx="-3.8" cy="-7.2" rx="1.1" ry="1.6" fill="#1a1a1a"/>
+              <ellipse cx="-3.8" cy="-7.2" rx="0.85" ry="1.3" fill="#E8B84B"/>
+              <circle cx="-3.8" cy="-7.2" r="0.5" fill="#1a1a1a"/>
+              <ellipse cx="3.8" cy="-7.2" rx="1.1" ry="1.6" fill="#1a1a1a"/>
+              <ellipse cx="3.8" cy="-7.2" rx="0.85" ry="1.3" fill="#E8B84B"/>
+              <circle cx="3.8" cy="-7.2" r="0.5" fill="#1a1a1a"/>
             </svg>
           </div>
         </div>
@@ -886,11 +917,26 @@
           <!-- Compass -->
           <div id="headingCompass" onclick="compassClick(event)" title="Click to set heading">
             <div id="compassRoamer">
-              <svg overflow="visible" width="28" height="40" viewBox="-14 -28 28 40">
-                <path d="M0,-28 L-14,12 L14,12 Z"
-                      fill="#CFE8F3" stroke="#7ab8d4" stroke-width="1.2"
-                      stroke-linejoin="round"/>
-                <circle cx="0" cy="0" r="3" fill="#E86F61"/>
+              <!-- R3 ellipse — pen hole at centre (0,0), heading 0 = up (-y) -->
+              <svg overflow="visible" width="28" height="28" viewBox="-14 -14 28 28">
+                <!-- Body ellipse -->
+                <ellipse cx="0" cy="0" rx="11" ry="14"
+                         fill="#E8DEB8" stroke="#B8A878" stroke-width="1.2"/>
+                <!-- Spigot — same cream -->
+                <circle cx="0" cy="0" r="8.4"
+                        fill="#E8DEB8" stroke="#B8A878" stroke-width="0.8"/>
+                <!-- Keypad green square -->
+                <rect x="-4" y="-4" width="8" height="8" rx="0.5" fill="#3C8B6E"/>
+                <rect x="-3.2" y="-3.2" width="6.4" height="6.4" rx="0.3" fill="#ffffff"/>
+                <!-- Red centre dot -->
+                <circle cx="0" cy="0" r="1.5" fill="#cc0000"/>
+                <!-- Eyes -->
+                <ellipse cx="-4.5" cy="-8.5" rx="1.3" ry="1.9" fill="#1a1a1a"/>
+                <ellipse cx="-4.5" cy="-8.5" rx="1.0" ry="1.55" fill="#E8B84B"/>
+                <circle cx="-4.5" cy="-8.5" r="0.6" fill="#1a1a1a"/>
+                <ellipse cx="4.5" cy="-8.5" rx="1.3" ry="1.9" fill="#1a1a1a"/>
+                <ellipse cx="4.5" cy="-8.5" rx="1.0" ry="1.55" fill="#E8B84B"/>
+                <circle cx="4.5" cy="-8.5" r="0.6" fill="#1a1a1a"/>
               </svg>
             </div>
           </div>
@@ -1428,20 +1474,34 @@
     position: absolute; top: 100%; left: 0;
     background: #fff; border: 1px solid #ccc;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 10000; min-width: 160px;
-    border-radius: 4px; overflow: hidden;
+    z-index: 10000; min-width: 190px;
+    border-radius: 4px; overflow: visible;
   }
   .dropdown-item {
-    padding: 8px 16px; cursor: pointer;
+    padding: 7px 16px; cursor: pointer;
     font-size: 13px; color: #333;
+    white-space: nowrap;
   }
   .dropdown-item:hover { background: #e8f0fe; }
-  .dropdown-label {
-    padding: 6px 16px 2px; font-size: 11px;
-    color: #888; font-weight: bold; text-transform: uppercase;
-    letter-spacing: 0.5px;
+  .dropdown-has-sub { padding-right: 8px; }
+  .dropdown-unavailable { color: #aaa; cursor: default; }
+  .dropdown-unavailable:hover { background: none; }
+  .unavail-tag {
+    font-size: 10px; color: #bbb;
+    margin-left: 6px; font-style: italic;
   }
   .dropdown-divider { border: none; border-top: 1px solid #eee; margin: 4px 0; }
+  /* Two-level submenu */
+  .dropdown-submenu { position: relative; }
+  .dropdown-sub-content {
+    display: none;
+    position: absolute; left: 100%; top: 0;
+    background: #fff; border: 1px solid #ccc;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    min-width: 210px; border-radius: 4px;
+    z-index: 10001;
+  }
+  .dropdown-submenu:hover > .dropdown-sub-content { display: block; }
 </style>
 <script>
 function toggleFileMenu() {
@@ -1478,7 +1538,7 @@ document.addEventListener('click', function(e) {
   <div style="background:#fff; border-radius:8px; padding:32px 40px; max-width:340px; width:90%;
               text-align:center; box-shadow:0 4px 24px rgba(0,0,0,0.3);">
     <div style="font-size:20px; font-weight:bold; margin-bottom:6px;">RBB Integrate</div>
-    <div style="font-size:14px; color:#555; margin-bottom:16px;">Version rbbav35</div>
+    <div style="font-size:14px; color:#555; margin-bottom:16px;">Version rbbav36</div>
     <div style="font-size:14px; margin-bottom:8px;">Copyright &copy; Dave Catlin 2022&ndash;2026</div>
     <div style="font-size:14px; margin-bottom:24px;">
       <a href="https://www.roamer-robotics.com" target="_blank"

@@ -28,6 +28,20 @@ function buildSidebar(cats, ws) {
 
 // ── Tab switching ─────────────────────────────
 function showTab(name, btn) {
+  // Close any open Settings flyout
+  var flyout = document.getElementById('rwFlyout');
+  if (flyout) flyout.classList.remove('open');
+  document.querySelectorAll('.rw-cat-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.rw-flyout-panel').forEach(function(p) { p.style.display = 'none'; });
+  // Close Position & Heading dialog if open
+  var phDlg = document.getElementById('posHeadingDlg');
+  if (phDlg && phDlg.style.display !== 'none') phDlg.style.display = 'none';
+  // Close character designer overlay if open
+  var cdOverlay = document.getElementById('characterDesignerOverlay');
+  if (cdOverlay && cdOverlay.style.display !== 'none') cdOverlay.style.display = 'none';
+  // Close prop designer overlay if open
+  var pdOverlay = document.getElementById('propDesignerOverlay');
+  if (pdOverlay && pdOverlay.style.display !== 'none') pdOverlay.style.display = 'none';
   // If leaving RoamerWorld while paused — reset run state so GO works on return
   var rwWasActive = document.getElementById('panel-rw').classList.contains('active');
   if (rwWasActive && name !== 'rw' && rw.running && rw.paused) {

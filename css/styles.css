@@ -554,8 +554,8 @@
     }
     /* Position marker: pen hole = SVG (0,0).
        JS sets left/top to the pen hole world position as % of grid.
-       SVG viewBox "-10 -14 20 24": origin (0,0) is at 50% width, 58.33% height.
-       translate(-50%, -58.33%) shifts the element so its (0,0) lands on left/top.
+       SVG viewBox "-10 -12 20 24": origin (0,0) is at 50% width, 50% height.
+       translate(-50%, -50%) shifts the element so its (0,0) lands on left/top.
        transform-origin matches so rotation is around (0,0) = pen hole.        */
     #posMarker {
       position: absolute;
