@@ -39,53 +39,50 @@ function rwGetRSL() {
 }
 
 // ── GO block click detection ──────────────────
+// Blockly absorbs clicks on FieldImage elements so we can't attach to the
+// block SVG directly. Instead we listen at the workspace level and check
+// whether the click landed on the GO block.
 function rwRegisterGOClick() {
-  wsGO.getAllBlocks(false).forEach(function(block) {
-    if (block.type !== 'block_go') return;
-    if (block._goClickRegistered) return;
-    block._goClickRegistered = true;
-    var svg = block.getSvgRoot ? block.getSvgRoot() : null;
-    if (!svg) return;
-
-    var lastFire = 0;
-    function fireGO(ev) {
-      // Only respond to direct clicks on the GO block, not bubbled events from children
-      ev.stopPropagation();
-      if (rw.running) return;
-      var now = Date.now();
-      if (now - lastFire < 800) return; // guard against double-fire
-      lastFire = now;
-      if (document.getElementById('panel-rw').classList.contains('active')) {
-        rwGO();
-      } else {
-        rwLaunchFromGO();
-      }
-    }
-
-    // Use click only (not mouseup) to avoid double-fire
-    svg.addEventListener('click', fireGO, false);
-  });
+  // No-op — registration now handled at workspace level in rwInitGOClick
 }
 
-// Re-register whenever workspace changes (blocks added/removed/loaded)
-// Called after wsGO is initialised
+var _goLastFire = 0;
+
 function rwInitGOClick() {
-  wsGO.addChangeListener(function(ev) {
-    var t = ev.type;
-    if (t === Blockly.Events.BLOCK_CREATE ||
-        t === Blockly.Events.FINISHED_LOADING ||
-        t === 'create' || t === 'finished_loading' ||
-        t === 'move') {
-      // Clear stale registrations so blocks re-register after workspace reload
-      if (t === Blockly.Events.FINISHED_LOADING || t === 'finished_loading') {
-        wsGO.getAllBlocks(false).forEach(function(b) {
-          if (b.type === 'block_go') b._goClickRegistered = false;
-        });
+  // Listen for clicks on the entire GO workspace SVG
+  var wsGOSvg = wsGO.getInjectionDiv ? wsGO.getInjectionDiv() : null;
+  if (!wsGOSvg) {
+    // Fallback: find the blocklyDiv for the GO workspace
+    wsGOSvg = document.getElementById('blocklyGO');
+  }
+  if (!wsGOSvg) return;
+
+  wsGOSvg.addEventListener('click', function(ev) {
+    if (rw.running) return;
+    var now = Date.now();
+    if (now - _goLastFire < 800) return;
+
+    // Walk up from the click target to see if we hit a block_go SVG group
+    var el = ev.target;
+    var maxWalk = 12;
+    while (el && maxWalk-- > 0) {
+      // Blockly marks block SVG roots with data-id
+      if (el.getAttribute && el.getAttribute('data-id')) {
+        var block = wsGO.getBlockById(el.getAttribute('data-id'));
+        if (block && block.type === 'block_go') {
+          _goLastFire = now;
+          if (document.getElementById('panel-rw').classList.contains('active')) {
+            rwGO();
+          } else {
+            rwLaunchFromGO();
+          }
+          return;
+        }
+        break; // hit a non-GO block, stop
       }
-      setTimeout(rwRegisterGOClick, 100);
+      el = el.parentElement;
     }
-  });
-  setTimeout(rwRegisterGOClick, 600); // initial registration
+  }, false);
 }
 
 // ── Sidebar ───────────────────────────────────

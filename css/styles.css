@@ -1092,6 +1092,7 @@
                background: #1E2E53; border-bottom: 1px solid #2a4080;
                padding: 5px 10px; flex-shrink: 0; }
     #modeBar label { color: #aac4ff; font-size: 12px; font-weight: bold; white-space: nowrap; }
+    #modeDisplay { font-size: 12px; font-weight: bold; color: #ffffff; }
     #modeSelect { font-size: 12px; font-weight: bold; padding: 4px 8px;
                   background: #0d1b35; color: #fff;
                   border: 1px solid #4a6080; border-radius: 4px; cursor: pointer; }
