@@ -549,7 +549,7 @@
       background-image:
         linear-gradient(rgba(74,106,170,0.7) 1px, transparent 1px),
         linear-gradient(90deg, rgba(74,106,170,0.7) 1px, transparent 1px);
-      background-size: 140px 140px; background-position: 0 70px, 70px 0;
+      background-size: 138px 138px; background-position: 0 69px, 69px 0;
       pointer-events: none;
     }
     /* Position marker: pen hole = SVG (0,0).
@@ -561,6 +561,7 @@
       position: absolute;
       pointer-events: none;
       transition: left 0.1s, top 0.1s;
+      transform-origin: 50% 50%;
       z-index: 2;
     }
     /* X row: left-padded to align left edge under grid left edge */
@@ -592,17 +593,17 @@
       background-image:
         linear-gradient(rgba(74,106,170,0.7) 1px, transparent 1px),
         linear-gradient(90deg, rgba(74,106,170,0.7) 1px, transparent 1px);
-      background-size: 130px 130px; background-position: 0 65px, 65px 0;
+      background-size: 128px 128px; background-position: 0 64px, 64px 0;
       pointer-events: none;
     }
-    /* Roamer triangle in compass — rotates with heading */
+    /* Roamer ellipse in compass — rotates with heading */
     #compassRoamer {
       position: absolute; top: 50%; left: 50%;
       /* Shift so SVG (0,0) — the pen hole — lands on compass centre.
-         SVG is 28x40px with viewBox -14 -28 28 40, so (0,0) is at
-         pixel (14,28) within the element. Shift by (-14px,-28px). */
-      margin-left: -14px; margin-top: -28px;
-      transform-origin: 14px 28px;
+         SVG is 28x28px with viewBox -14 -14 28 28, so (0,0) is at
+         pixel (14,14) within the element. Shift by (-14px,-14px). */
+      margin-left: -14px; margin-top: -14px;
+      transform-origin: 14px 14px;
       transform: rotate(0deg); transition: transform 0.1s;
       pointer-events: none; z-index: 1;
     }
